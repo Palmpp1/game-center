@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" data-bs-theme="dark">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,38 +7,24 @@
     @include('partials.head')
 </head>
 <body class="min-vh-100 d-flex flex-column justify-content-between">
-    <!-- Navbar -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle px-3 py-2 shadow-sm">
+        <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary-subtle px-3 py-2 shadow-sm">
         <div class="container-fluid max-w-7xl">
-            <!-- Brand Logo -->
-            <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
-                <div class="rounded-3 bg-danger d-flex align-items-center justify-center fw-bold text-white" style="width: 38px; height: 38px; font-size: 16px;">
-                    LP
-                </div>
+                        <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="rounded-3 object-fit-cover shadow-sm border border-secondary-subtle" style="width: 38px; height: 38px;">
                 <div class="lh-sm">
                     <div class="fw-black fs-5 tracking-wide text-white">
                         LETSPLAY <span class="text-danger">GAMING CAFE</span>
                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1" style="font-size: 10px;">24 HRS</span>
                     </div>
-                    <small class="text-secondary d-none d-sm-block" style="font-size: 11px;">Gaming Café & Internet Lounge</small>
+                    <small class="text-secondary d-none d-sm-block" style="font-size: 11px;">Gaming Café </small>
                 </div>
             </a>
 
-            <!-- Search Bar Pill (Desktop) -->
-            <div class="d-none d-md-flex flex-grow-1 mx-4" style="max-width: 420px;">
-                <div class="input-group">
-                    <span class="input-group-text bg-dark-subtle border-secondary-subtle text-secondary">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control form-control-sm bg-dark-subtle border-secondary-subtle text-light" placeholder="ค้นหาเกม, โซนคอม, กะเพรา, มาม่า, เลย์...">
-                </div>
-            </div>
 
-            <!-- Nav Actions & Auth -->
-            <div class="d-flex align-items-center gap-2">
+
+                        <div class="d-flex align-items-center gap-2">
                 @auth
-                    <!-- Quick Wallet Pill -->
-                    <a href="{{ route('customer.topup') }}" class="btn btn-outline-secondary btn-sm rounded-pill d-none d-sm-flex align-items-center gap-2 px-3">
+                                        <a href="{{ route('customer.topup') }}" class="btn btn-outline-secondary btn-sm rounded-pill d-none d-sm-flex align-items-center gap-2 px-3">
                         <span class="badge bg-warning text-dark rounded-circle" style="width: 20px; height: 20px; line-height: 12px; font-size: 11px;">฿</span>
                         <span class="fw-bold text-light font-monospace">{{ number_format(auth()->user()->balance, 2) }}</span>
                         <span class="badge bg-danger rounded-pill" style="font-size: 10px;">+ เติม</span>
@@ -59,10 +45,8 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container py-4 flex-grow-1">
-        <!-- Hero Promo Banner -->
-        <div class="card bg-dark border-secondary-subtle rounded-4 overflow-hidden position-relative p-4 p-md-5 mb-4 shadow-lg">
+        <main class="container py-4 flex-grow-1">
+                <div class="card bg-dark border-secondary-subtle rounded-4 overflow-hidden position-relative p-4 p-md-5 mb-4 shadow-lg">
             <img
                 src="https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/4c679fc9b8f253d5915261338f81fe1043fded45-3440x1020.jpg?accountingTag=VAL&fit=fill&fm=jpg&q=80&h=1020"
                 alt="Valorant Gaming Hero"
@@ -74,7 +58,7 @@
             <div class="position-relative z-1" style="max-width: 680px;">
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <span class="badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2.5">
-                        <i class="bi bi-clock"></i> เปิดบริการ 24 ชั่วโมง • ศาลายา
+                        <i class="bi bi-clock"></i> เปิดบริการ 24 ชั่วโมง
                     </span>
                     <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-1 px-2.5">
                         <i class="bi bi-lightning-charge"></i> เน็ตไฟเบอร์ 1000/1000 ปิงต่ำ 5ms
@@ -90,7 +74,7 @@
                 </h1>
 
                 <p class="text-secondary fs-6 mb-4 lh-base">
-                    สัมผัสบรรยากาศร้านเกมยุคใหม่ย่านศาลายา สเปกแรงเล่นลื่นทุกเกม Valorant, GTA V, Apex Legends พร้อมสั่งข้าวกะเพรา มาม่าต้มยำ ขนมเลย์ และน้ำอัดลมเย็นเจี๊ยบส่งตรงถึงโต๊ะคอม ไม่ต้องลุกให้เสียจังหวะ
+                    สัมผัสบรรยากาศร้านเกมยุคใหม่ สเปกแรงเล่นลื่นทุกเกม Valorant,Overwatch, GTA V, Apex Legends พร้อมสั่งข้าวกะเพรา มาม่าต้มยำ ขนมเลย์ และน้ำอัดลมเย็นเจี๊ยบส่งตรงถึงโต๊ะคอม ไม่ต้องลุกให้เสียจังหวะ
                 </p>
 
                 <div class="d-flex flex-wrap gap-2">
@@ -113,8 +97,7 @@
             </div>
         </div>
 
-        <!-- Quick Filter Pills -->
-        <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 text-nowrap">
+                <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 text-nowrap">
             <button class="btn btn-danger btn-sm rounded-pill px-3 fw-bold"><i class="bi bi-fire me-1"></i> ยอดนิยมทั้งหมด</button>
             <a href="{{ route('customer.seat-map') }}" class="btn btn-outline-secondary text-light btn-sm rounded-pill px-3"><i class="bi bi-display me-1"></i> ผังโซนคอมพิวเตอร์</a>
             <a href="{{ route('customer.food-order') }}" class="btn btn-outline-secondary text-light btn-sm rounded-pill px-3"><i class="bi bi-egg-fried me-1"></i> อาหารตามสั่ง</a>
@@ -124,7 +107,7 @@
             <a href="{{ route('customer.topup') }}" class="btn btn-outline-secondary text-light btn-sm rounded-pill px-3"><i class="bi bi-clock-history me-1"></i> แพ็กเกจชั่วโมง</a>
         </div>
 
-        <!-- Section 1: PC Zones -->
+        <!-- โซนเครื่องเล่นเกม -->
         <section class="mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
@@ -137,8 +120,7 @@
             </div>
 
             <div class="row g-4">
-                <!-- Standard Zone -->
-                <div class="col-12 col-md-4">
+                                <div class="col-12 col-md-4">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -160,8 +142,7 @@
                     </div>
                 </div>
 
-                <!-- VIP Zone -->
-                <div class="col-12 col-md-4">
+                                <div class="col-12 col-md-4">
                     <div class="card h-100 bg-dark border-danger-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -183,8 +164,7 @@
                     </div>
                 </div>
 
-                <!-- Pro Streamer Zone -->
-                <div class="col-12 col-md-4">
+                                <div class="col-12 col-md-4">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -208,7 +188,7 @@
             </div>
         </section>
 
-        <!-- Section 2: Food & Snacks -->
+        <!-- เมนูอาหารแนะนำ -->
         <section class="mb-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
@@ -221,8 +201,7 @@
             </div>
 
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
-                <!-- Mama Tom Yum -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-danger mb-2"><i class="bi bi-cup-hot"></i></div>
@@ -237,8 +216,7 @@
                     </div>
                 </div>
 
-                <!-- Kaprao -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-warning mb-2"><i class="bi bi-egg-fried"></i></div>
@@ -253,8 +231,7 @@
                     </div>
                 </div>
 
-                <!-- Moo Kratiem -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-danger mb-2"><i class="bi bi-basket2"></i></div>
@@ -269,8 +246,7 @@
                     </div>
                 </div>
 
-                <!-- Lay's -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-success mb-2"><i class="bi bi-bag"></i></div>
@@ -285,8 +261,7 @@
                     </div>
                 </div>
 
-                <!-- Red Sausage -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-danger mb-2"><i class="bi bi-box2"></i></div>
@@ -301,8 +276,7 @@
                     </div>
                 </div>
 
-                <!-- Thai Tea -->
-                <div class="col">
+                                <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-3 p-3 text-center d-flex flex-column justify-content-between">
                         <div>
                             <div class="fs-1 text-warning mb-2"><i class="bi bi-cup-straw"></i></div>
@@ -318,88 +292,12 @@
                 </div>
             </div>
         </section>
-
-        <!-- Section 3: Seeded Accounts Box -->
-        <section class="card bg-dark border-secondary-subtle rounded-4 p-4 mb-5 shadow-sm">
-            <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom border-secondary-subtle pb-3 mb-3 gap-2">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="bg-danger rounded" style="width: 4px; height: 20px;"></span>
-                    <h3 class="h6 fw-bold text-white m-0">บัญชีสำหรับทดสอบระบบร้านเกม (Seeded Accounts)</h3>
-                </div>
-                <span class="badge bg-warning-subtle text-warning border border-warning-subtle font-monospace">
-                    <i class="bi bi-key me-1"></i> รหัสผ่านทุกบัญชี: password
-                </span>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-12 col-md-4">
-                    <div class="p-3 bg-dark-subtle border border-secondary-subtle rounded-3">
-                        <span class="badge bg-danger-subtle text-danger mb-1">CUSTOMER 1 (ลูกค้า)</span>
-                        <div class="fw-bold text-white small">Username: customer1</div>
-                        <small class="text-secondary font-monospace d-block">Email: cust1@pcbang.test</small>
-                        <small class="text-success fw-semibold d-block">ยอดเงินเริ่มต้น: ฿300.00</small>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="p-3 bg-dark-subtle border border-secondary-subtle rounded-3">
-                        <span class="badge bg-warning-subtle text-warning mb-1">STAFF (พนักงาน)</span>
-                        <div class="fw-bold text-white small">Username: staff</div>
-                        <small class="text-secondary font-monospace d-block">Email: staff@pcbang.test</small>
-                        <small class="text-secondary d-block">หน้าที่: คิวครัว + มอนิเตอร์โต๊ะ</small>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="p-3 bg-dark-subtle border border-secondary-subtle rounded-3">
-                        <span class="badge bg-info-subtle text-info mb-1">ADMIN (ผู้ดูแลร้าน)</span>
-                        <div class="fw-bold text-white small">Username: admin</div>
-                        <small class="text-secondary font-monospace d-block">Email: admin@pcbang.test</small>
-                        <small class="text-secondary d-block">หน้าที่: คลังสินค้า + สรุปยอดขาย</small>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4: Perks -->
-        <section class="row g-4 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
-                    <div class="rounded-3 bg-danger-subtle text-danger d-flex align-items-center justify-content-center fs-4 mb-3" style="width: 44px; height: 44px;">
-                        <i class="bi bi-speedometer2"></i>
-                    </div>
-                    <h4 class="h6 fw-bold text-white mb-2">เน็ตไฟเบอร์ 1000/1000 สำหรับเกมเมอร์</h4>
-                    <p class="text-secondary small m-0">เชื่อมต่อเราเตอร์เกมมิ่งตรง ปิงนิ่ง เล่นลื่น ไม่มีกระตุก</p>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-4">
-                <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
-                    <div class="rounded-3 bg-warning-subtle text-warning d-flex align-items-center justify-content-center fs-4 mb-3" style="width: 44px; height: 44px;">
-                        <i class="bi bi-cup-hot"></i>
-                    </div>
-                    <h4 class="h6 fw-bold text-white mb-2">พร้อมเสิร์ฟถึงโต๊ะคอมตลอด 24 ชม.</h4>
-                    <p class="text-secondary small m-0">สั่งอาหาร ขนม น้ำอัดลม ได้จากหน้าจอ ไม่ต้องลุกจากเก้าอี้</p>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-4">
-                <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
-                    <div class="rounded-3 bg-info-subtle text-info d-flex align-items-center justify-content-center fs-4 mb-3" style="width: 44px; height: 44px;">
-                        <i class="bi bi-snow"></i>
-                    </div>
-                    <h4 class="h6 fw-bold text-white mb-2">แอร์เย็นเจี๊ยบ เก้าอี้ Ergonomic</h4>
-                    <p class="text-secondary small m-0">เบาะหนานุ่มระบายอากาศ รองรับสรีระ เล่นยาวข้ามคืนสบายหลัง</p>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="border-top border-secondary-subtle bg-dark py-4 text-secondary small">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
             <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-danger rounded-2 px-2 py-1">LP</span>
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="rounded-2 object-fit-cover shadow-sm" style="width: 24px; height: 24px;">
                 <span class="fw-bold text-white">Letsplay <span class="text-danger">Gaming Cafe</span></span>
             </div>
 

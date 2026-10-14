@@ -1,43 +1,37 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
     <body class="min-vh-100 d-flex flex-column">
-        <!-- Mobile Top Navbar -->
-        <header class="navbar navbar-dark bg-dark d-lg-none border-bottom border-secondary-subtle sticky-top px-3 py-2">
+                <header class="navbar navbar-dark bg-dark d-lg-none border-bottom border-secondary-subtle sticky-top px-3 py-2">
             <div class="d-flex align-items-center gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
                     <i class="bi bi-list fs-5"></i>
                 </button>
-                <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center gap-2 m-0 fs-6 fw-bold">
-                    <span class="badge bg-danger rounded-2 px-2 py-1">LP</span>
+                <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2 m-0 fs-6 fw-bold">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="rounded-2 object-fit-cover shadow-sm" style="width: 28px; height: 28px;">
                     <span>LETSPLAY <span class="text-danger">GAMING</span></span>
                 </a>
             </div>
 
-            <!-- Quick Wallet for Mobile -->
-            <a href="{{ route('customer.topup') }}" class="badge text-bg-dark border border-secondary text-decoration-none py-2 px-2.5 d-flex align-items-center gap-1 fs-7">
+                        <a href="{{ route('customer.topup') }}" class="badge text-bg-dark border border-secondary text-decoration-none py-2 px-2.5 d-flex align-items-center gap-1 fs-7">
                 <span class="text-warning fw-bold">฿</span>
                 <span class="fw-bold">{{ number_format(auth()->user()->balance ?? 0, 2) }}</span>
             </a>
         </header>
 
-        <!-- Desktop Fixed Sidebar -->
+        <!-- เมนูด้านข้างสำหรับเดสก์ท็อป -->
         <aside class="bs-sidebar d-none d-lg-flex flex-column position-fixed top-0 bottom-0 start-0 z-3 p-3 overflow-y-auto overflow-x-hidden">
-            <!-- Brand -->
-            <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white mb-3 px-1">
-                <div class="rounded-3 bg-danger d-flex align-items-center justify-center fw-bold text-white" style="width: 36px; height: 36px; font-size: 15px; line-height: 1;">
-                    LP
-                </div>
+                        <a href="{{ route('home') }}" class="d-flex align-items-center gap-2.5 text-decoration-none text-white mb-3 px-1">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="rounded-3 object-fit-cover shadow-sm border border-secondary-subtle" style="width: 38px; height: 38px;">
                 <div class="lh-sm">
                     <div class="fw-black fs-6 tracking-wide">LETSPLAY <span class="text-danger">GAMING</span></div>
-                    <small class="text-secondary" style="font-size: 12px;">Cyber Cafe & Lounge</small>
+                    <small class="text-secondary" style="font-size: 12px;">Gaming Cafe & Kitchen</small>
                 </div>
             </a>
 
-            <!-- Wallet Widget -->
-            <div class="bs-card p-3 mb-3">
+                        <div class="bs-card p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <small class="text-secondary fw-semibold">ยอดเงินในกระเป๋า</small>
                     <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 11px;">WALLET</span>
@@ -52,8 +46,7 @@
                 </div>
             </div>
 
-            <!-- Nav Links -->
-            <nav class="nav flex-column gap-1 flex-grow-1">
+                        <nav class="nav flex-column gap-1 flex-grow-1">
                 <div class="text-secondary text-uppercase fw-bold px-2 pt-2 pb-1" style="font-size: 11px; letter-spacing: 0.05em;">
                     บริการลูกค้า
                 </div>
@@ -109,8 +102,7 @@
 
             <hr class="border-secondary-subtle my-3">
 
-            <!-- Desktop User Dropdown -->
-            <div class="dropdown dropup mt-auto">
+                        <div class="dropdown dropup mt-auto">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle p-2 rounded-3 hover-bg-secondary w-100" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 0;">
                     <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold me-2 flex-shrink-0" style="width: 36px; height: 36px; font-size: 13px;">
                         {{ auth()->user()->initials() ?? 'U' }}
@@ -120,17 +112,11 @@
                         <small class="text-secondary text-truncate d-block" style="font-size: 11px;">{{ auth()->user()->email }}</small>
                     </div>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-secondary-subtle w-100 mb-2 py-1" style="min-width: 100%; max-width: 100%;">
+                <ul class="dropdown-menu shadow-lg border-secondary-subtle w-100 mb-2 py-1" style="min-width: 100%; max-width: 100%;">
                     <li>
                         <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-truncate" href="{{ route('profile.edit') }}">
                             <i class="bi bi-gear text-secondary"></i>
                             <span>การตั้งค่าโปรไฟล์</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-truncate" href="{{ route('appearance.edit') }}">
-                            <i class="bi bi-palette text-secondary"></i>
-                            <span>โหมดการแสดงผล</span>
                         </a>
                     </li>
                     <li><hr class="dropdown-divider border-secondary-subtle my-1"></li>
@@ -147,18 +133,17 @@
             </div>
         </aside>
 
-        <!-- Mobile Offcanvas Sidebar -->
+        <!-- เมนูด้านข้างสำหรับมือถือ -->
         <div class="offcanvas offcanvas-start bg-dark text-white border-end border-secondary-subtle d-lg-none" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
             <div class="offcanvas-header border-bottom border-secondary-subtle">
-                <div class="d-flex align-items-center gap-2" id="sidebarOffcanvasLabel">
-                    <span class="badge bg-danger rounded-2 px-2 py-1">LP</span>
+                <a href="{{ route('home') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white" id="sidebarOffcanvasLabel">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="rounded-2 object-fit-cover shadow-sm" style="width: 28px; height: 28px;">
                     <span class="fw-bold">LETSPLAY <span class="text-danger">GAMING</span></span>
-                </div>
+                </a>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body d-flex flex-column p-3">
-                <!-- Mobile Wallet Card -->
-                <div class="bs-card p-3 mb-3">
+                                <div class="bs-card p-3 mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <small class="text-secondary">ยอดเงินในกระเป๋า</small>
                         <span class="badge bg-warning-subtle text-warning border border-warning-subtle" style="font-size: 11px;">WALLET</span>
@@ -204,8 +189,7 @@
             </div>
         </div>
 
-        <!-- Main Content Area with Proper Margin Offset for Desktop Sidebar -->
-        <div class="bs-main-layout flex-grow-1 d-flex flex-column min-vh-100">
+                <div class="bs-main-layout flex-grow-1 d-flex flex-column min-vh-100">
             {{ $slot }}
         </div>
 

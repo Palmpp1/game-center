@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คู่มือเตรียมสอบโปรเจกต์: ระบบจัดการร้านเกมคาเฟ่ LETSPLAY</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 14mm 12mm 14mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.55;
+            color: #1e293b;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2, h3, h4 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 0;
+            page-break-after: avoid;
+        }
+
+        h1 {
+            font-size: 20pt;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            color: #b91c1c;
+        }
+
+        h2 {
+            font-size: 13.5pt;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e2e8f0;
+            color: #1e3a8a;
+        }
+
+        h3 {
+            font-size: 11.5pt;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #0f172a;
+        }
+
+        p {
+            margin: 0 0 8px 0;
+        }
+
+        .header-box {
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            border-left: 5px solid #dc2626;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px 16px;
+            font-size: 9.5pt;
+            margin-top: 8px;
+            color: #334155;
+        }
+
+        .team-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            margin: 10px 0 16px 0;
+        }
+
+        .team-table th, .team-table td {
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            text-align: left;
+        }
+
+        .team-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .team-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .qa-card {
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 11px;
+            page-break-inside: avoid;
+        }
+
+        .qa-card.accent {
+            border-left: 4px solid #2563eb;
+            background: #f8fafc;
+        }
+
+        .qa-card.warning {
+            border-left: 4px solid #d97706;
+            background: #fffbeb;
+        }
+
+        .qa-card.success {
+            border-left: 4px solid #16a34a;
+            background: #f0fdf4;
+        }
+
+        .qa-card.danger {
+            border-left: 4px solid #dc2626;
+            background: #fef2f2;
+        }
+
+        .qa-question {
+            font-weight: 700;
+            font-size: 10.5pt;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .qa-answer {
+            font-size: 10pt;
+            color: #334155;
+        }
+
+        .qa-answer ul {
+            margin: 4px 0 6px 0;
+            padding-left: 20px;
+        }
+
+        .qa-answer li {
+            margin-bottom: 3px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 8pt;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }
+
+        .badge-db { background: #e0e7ff; color: #3730a3; }
+        .badge-logic { background: #fef3c7; color: #92400e; }
+        .badge-arch { background: #dcfce7; color: #166534; }
+        .badge-sec { background: #fee2e2; color: #991b1b; }
+
+        code {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 9pt;
+            background: #f1f5f9;
+            color: #b91c1c;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 8.5pt;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 6px 0;
+            line-height: 1.45;
+        }
+
+        .file-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8.5pt;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px solid #cbd5e1;
+            font-size: 8.5pt;
+            color: #64748b;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-box">
+        <h1>คู่มือเตรียมสอบโปรเจกต์: ระบบจัดการร้านเกมคาเฟ่ LETSPLAY</h1>
+        <p style="font-size: 11pt; font-weight: 600; color: #475569; margin-bottom: 6px;">
+            แนวคำถาม คำตอบเชิงลึก และยุทธวิธีการนำเสนอสำหรับวิชา Web Application & Database Systems
+        </p>
+        <div class="meta-grid">
+            <div><strong>สแตกเทคโนโลยี:</strong> PHP 8.4, Laravel 13, SQLite, Blade, CSS</div>
+            <div><strong>สถาปัตยกรรม:</strong> Pure Laravel MVC + Service Layer Pattern</div>
+            <div><strong>ฐานข้อมูล:</strong> SQLite (11 ตารางหลัก, Audit Logs, Price Snapshots)</div>
+            <div><strong>ชุดทดสอบ:</strong> Pest Automated Test Suite (53 ผ่านครบ 100%)</div>
+        </div>
+    </div>
+
+    <h2>1. การแบ่งบทบาทหน้าที่ของสมาชิกในทีม (5 คน)</h2>
+    <table class="team-table">
+        <thead>
+            <tr>
+                <th style="width: 14%;">สมาชิก</th>
+                <th style="width: 20%;">ส่วนที่รับผิดชอบ</th>
+                <th style="width: 32%;">ไฟล์โค้ดหลัก</th>
+                <th style="width: 34%;">ตารางฐานข้อมูลและประเด็นเด่น</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. ปาล์ม</strong></td>
+                <td>Web: Customer Experience, Dashboard, Seat Map, Auth</td>
+                <td>
+                    <span class="file-tag">DashboardController.php</span><br>
+                    <span class="file-tag">SeatController.php</span><br>
+                    <span class="file-tag">dashboard.blade.php</span>
+                </td>
+                <td>
+                    ตาราง <code>users</code>, <code>seat_sessions</code><br>
+                    ระบบ Check-in, Check-out, Auto-cut session เมื่อเงินหมด
+                </td>
+            </tr>
+            <tr>
+                <td><strong>2. ตอง</strong></td>
+                <td>Web: Food POS, Cart, Wallet & Packages</td>
+                <td>
+                    <span class="file-tag">FoodOrderController.php</span><br>
+                    <span class="file-tag">WalletController.php</span><br>
+                    <span class="file-tag">food-order.blade.php</span>
+                </td>
+                <td>
+                    ตาราง <code>orders</code>, <code>packages</code>, <code>user_packages</code><br>
+                    กลไก Available Balance กันเงินค่าเครื่องก่อนสั่งอาหาร
+                </td>
+            </tr>
+            <tr>
+                <td><strong>3. ดิว</strong></td>
+                <td>Web: Staff Monitor, Kitchen Queue, Admin Report</td>
+                <td>
+                    <span class="file-tag">StaffController.php</span><br>
+                    <span class="file-tag">AdminController.php</span><br>
+                    <span class="file-tag">kitchen-queue.blade.php</span>
+                </td>
+                <td>
+                    ตาราง <code>zones</code>, <code>seats</code>, <code>products</code><br>
+                    การยืนยันรับเงินสด, คืนสต็อกเมื่อ Cancel, สรุปยอดขาย
+                </td>
+            </tr>
+            <tr>
+                <td><strong>4. บอล</strong></td>
+                <td>Database: Master Data & Sessions</td>
+                <td>
+                    <span class="file-tag">create_gaming_cafe_tables.php</span><br>
+                    <span class="file-tag">Zone.php</span>, <span class="file-tag">Seat.php</span>, <span class="file-tag">Package.php</span>
+                </td>
+                <td>
+                    ตาราง <code>users</code>, <code>zones</code>, <code>seats</code>, <code>packages</code>, <code>user_packages</code>, <code>seat_sessions</code><br>
+                    ความสัมพันธ์ 1-N, Rich Pivot, Foreign Key Constraints
+                </td>
+            </tr>
+            <tr>
+                <td><strong>5. นะโม</strong></td>
+                <td>Database: Transactions, Orders & Products</td>
+                <td>
+                    <span class="file-tag">create_gaming_cafe_tables.php</span><br>
+                    <span class="file-tag">Order.php</span>, <span class="file-tag">Product.php</span>, <span class="file-tag">WalletTransaction.php</span>
+                </td>
+                <td>
+                    ตาราง <code>wallet_transactions</code>, <code>categories</code>, <code>products</code>, <code>orders</code>, <code>order_items</code><br>
+                    Audit Trail, Snapshot Pattern, SQL Aggregate
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. หมวดโครงสร้างฐานข้อมูลและการออกแบบ (Database & Schema Design)</h2>
+
+    <div class="qa-card accent">
+        <div class="qa-question"><span class="badge badge-db">DB</span> คำถามที่ 1: ทำไมตาราง <code>seat_sessions</code> ต้องมีคอลัมน์ <code>rate_snapshot</code> ทั้งที่เครื่องผูกกับโซนอยู่แล้ว?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เพื่อแก้ปัญหา Price Change Propagation หากเราดึงราคาโดยการ JOIN ไปยังตาราง <code>zones</code> ตลอดเวลา เมื่อทางร้านปรับขึ้นราคาค่าบริการของโซนในภายหลัง ประวัติการเล่นเก่าในอดีตหรือเซสชันที่ลูกค้ายังเล่นไม่เสร็จจะถูกคำนวณด้วยราคาใหม่ทันที การบันทึก <code>rate_snapshot</code> ไว้ในตาราง <code>seat_sessions</code> ณ วินาทีที่กดเปิดเครื่อง ทำให้คิดเงินด้วยราคาที่เป็นธรรมตามสัญญาตอนเช็คอินเสมอ หลักการนี้ถูกใช้กับคอลัมน์ <code>unit_price</code> ในตาราง <code>order_items</code> เพื่อตรึงราคาสินค้า ณ ตอนสั่งซื้อเช่นกัน
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question"><span class="badge badge-db">DB</span> คำถามที่ 2: ทำไมต้องแยกตาราง <code>orders</code> ออกจาก <code>order_items</code>?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เป็นไปตามหลัก Normalization ขั้นที่ 1 (1NF) และขั้นที่ 3 (3NF) คำสั่งซื้อ 1 ครั้ง (Order) สามารถประกอบด้วยสินค้าได้หลายรายการ (Many Items) หากเก็บในตารางเดียวจะเกิด Repeating Group หรือต้องเก็บข้อมูลเป็นสตริง ซึ่งไม่สามารถคำนวณผลรวม ค้นหา หรือตัดสต็อกรายตัวผ่าน SQL ได้ การแยก <code>orders</code> เป็นส่วนหัวบิล (Header) และ <code>order_items</code> เป็นรายการย่อย (Line Items) ช่วยให้บันทึก <code>quantity</code>, <code>unit_price</code>, และ <code>subtotal</code> ได้อย่างถูกต้อง
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question"><span class="badge badge-db">DB</span> คำถามที่ 3: ทำไม Foreign Key ส่วนใหญ่ใช้ <code>restrictOnDelete()</code> แต่ระหว่าง <code>orders</code> กับ <code>order_items</code> ใช้ <code>cascadeOnDelete()</code>?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เพื่อรักษาความถูกต้องของข้อมูล (Data Integrity):
+            <ul>
+                <li><code>restrictOnDelete()</code>: ใช้กับ <code>users</code>, <code>seats</code>, <code>products</code> เพื่อห้ามลบข้อมูลหลักหากยังมีประวัติทางการเงินหรือประวัติการเล่นผูกอยู่ ป้องกันการเกิดข้อมูลกำพร้า (Orphan Records)</li>
+                <li><code>cascadeOnDelete()</code>: ใช้กับ <code>order_items</code> ที่ผูกกับ <code>orders</code> เนื่องจากรายการย่อยในบิลเป็นส่วนประกอบเฉพาะของบิลนั้น หากหัวบิลถูกสั่งลบ รายการย่อยต้องถูกลบตามทันที</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question"><span class="badge badge-db">DB</span> คำถามที่ 4: ตาราง <code>user_packages</code> เป็น Pivot Table ธรรมดาหรือไม่ แตกต่างอย่างไร?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เป็น Rich Pivot Table ไม่ใช่ Pivot Table แบบคู่ไอดีธรรมดา ตารางนี้มี Primary Key <code>id</code> ของตัวเอง และมีแอตทริบิวต์ <code>remaining_minutes</code>, <code>purchased_at</code>, และ <code>expired_at</code> ทำให้ลูกค้ารายเดียวสามารถซื้อแพ็กเกจชนิดเดียวกันซ้ำได้หลายครั้ง โดยระบบจะแยกตัดเวลาและนับวันหมดอายุของแต่ละแพ็กเกจออกจากกันอย่างอิสระ
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question"><span class="badge badge-db">DB</span> คำถามที่ 5: ทำไมต้องมีตาราง <code>wallet_transactions</code> ทั้งที่มีคอลัมน์ <code>balance</code> ในตาราง <code>users</code> อยู่แล้ว?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ทำหน้าที่เป็น Audit Trail คอลัมน์ <code>users.balance</code> เก็บเพียงยอดเงินปัจจุบัน แต่ตาราง <code>wallet_transactions</code> เก็บบันทึกประวัติทุกการเคลื่อนไหวของเงิน ทั้งประเภทรายการ (<code>topup</code>, <code>deduct</code>), จำนวนเงิน, ที่มาของรายการ (<code>ref_type</code>: session, food_order, package_purchase) และเลขอ้างอิง (<code>ref_id</code>) ทำให้สามารถตรวจสอบที่มาที่ไปของยอดเงินย้อนหลังได้ตลอดเวลา
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>3. หมวด Business Logic, Concurrency & ป้องกัน Race Condition</h2>
+
+    <div class="qa-card warning">
+        <div class="qa-question"><span class="badge badge-logic">LOGIC</span> คำถามที่ 1: ถ้าลูกค้าเล่นโหมด Pay-as-you-go มีเงิน 100 บาท เล่นไปแล้ว 60 บาท แล้วไปกดสั่งอาหาร 80 บาท ระบบจะยอมให้สั่งหรือไม่?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ระบบจะปฏิเสธคำสั่งซื้อทันที ในไฟล์ <span class="file-tag">FoodOrderController.php</span> มีเมธอด <code>calculateAvailableBalance()</code>:
+            <pre>
+$usedMinutes = max(1, (int) ceil($startTime->diffInSeconds(Carbon::now()) / 60));
+$estimatedCost = round(($usedMinutes / 60) * (float) $session->rate_snapshot, 2);
+return max(0.00, round($balance - $estimatedCost, 2));</pre>
+            ระบบจะคำนวณค่าเครื่องที่เกิดขึ้นแล้ว (60 บาท) และกันออกจากยอดเงินในกระเป๋า (100 บาท) ทำให้เหลือ Available Balance สั่งอาหารได้เพียง 40 บาท เมื่อลูกค้าสั่ง 80 บาท ระบบจะแจ้งเตือนว่ายอดเงินไม่เพียงพอเนื่องจากต้องกันเงินไว้จ่ายค่าเครื่องคอมพิวเตอร์ ป้องกันเงินติดลบเมื่อเช็คเอาท์
+        </div>
+    </div>
+
+    <div class="qa-card danger">
+        <div class="qa-question"><span class="badge badge-logic">CONCURRENCY</span> คำถามที่ 2: ถ้าลูกค้า 2 คนเปิดหน้าผังที่นั่งพร้อมกัน เห็นเครื่องเดียวกันว่างอยู่ แล้วกดเช็คอินในเสี้ยววินาทีเดียวกัน ระบบจัดการอย่างไร?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ป้องกันด้วย Atomic Database Query ใน <span class="file-tag">SeatController.php</span> บรรทัดที่ 123-129:
+            <pre>
+$updated = Seat::where('id', $seat->id)
+    ->where('status', 'available')
+    ->update(['status' => 'occupied']);
+
+if (! $updated) {
+    return redirect()->back()->with('error', 'ที่นั่งนี้ถูกผู้อื่นเช็คอินไปก่อนหน้าแล้ว');
+}</pre>
+            คำสั่ง SQL <code>UPDATE seats SET status = 'occupied' WHERE id = ? AND status = 'available'</code> ทำงานระดับ Atomic Request แรกที่ไปถึงฐานข้อมูลจะอัปเดตสำเร็จ (คืนค่า 1) ส่วน Request ที่สองจะไม่พบแถวที่ตรงกับเงื่อนไข (คืนค่า 0) ทำให้ถูกปฏิเสธทันที ป้องกัน Race Condition ได้ 100%
+        </div>
+    </div>
+
+    <div class="qa-card danger">
+        <div class="qa-question"><span class="badge badge-logic">CONCURRENCY</span> คำถามที่ 3: หากสต็อกสินค้าเหลือ 1 ชิ้น แต่มีลูกค้า 2 คนกดสั่งพร้อมกัน จะเกิดปัญหาสต็อกติดลบหรือไม่?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ไม่ติดลบ เพราะใน <span class="file-tag">FoodOrderController.php</span> โค้ดถูกครอบด้วย <code>DB::transaction()</code> และใช้ <code>lockForUpdate()</code> บนตารางสินค้า:
+            <pre>
+$product = Product::where('id', $productId)->lockForUpdate()->first();
+if ($product->stock_quantity < $quantity) {
+    throw new \Exception('สินค้า ' . $product->name . ' มีไม่พอ');
+}</pre>
+            ฐานข้อมูลจะล็อกแถวสินค้าไว้ ทำให้ Request ที่สองต้องรอจนกว่า Transaction แรกจะเสร็จสิ้น เมื่อถึงคิว Request ที่สอง สต็อกจะกลายเป็น 0 และระบบจะโยน Exception ยกเลิกการสั่งซื้อและ Rollback ข้อมูลทั้งหมด
+        </div>
+    </div>
+
+    <div class="qa-card warning">
+        <div class="qa-question"><span class="badge badge-logic">LOGIC</span> คำถามที่ 4: กรณีลูกค้าสั่งอาหารแบบชำระเงินสด พนักงานสามารถเริ่มทำอาหารหรือเสิร์ฟก่อนได้หรือไม่?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ไม่ได้ ใน <span class="file-tag">StaffController.php</span> เมธอด <code>updateOrderStatus</code> มีการตรวจสอบ:
+            <pre>
+if (in_array($status, ['preparing', 'served']) && $order->payment_status !== 'paid') {
+    return redirect()->back()->with('error', 'ไม่สามารถเปลี่ยนสถานะอาหารได้ เนื่องจากยังไม่ได้ยืนยันรับเงินสด');
+}</pre>
+            พนักงานต้องกดปุ่มยืนยันการรับเงินสดผ่าน <code>confirmCashPayment()</code> ให้ <code>payment_status = 'paid'</code> เสียก่อน จึงจะอนุญาตให้เปลี่ยนสถานะเป็นทำอาหารหรือเสิร์ฟได้ ป้องกันปัญหาทำอาหารไปแล้วแต่ลูกค้าไม่จ่ายเงิน
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>4. หมวดสถาปัตยกรรมซอฟต์แวร์ MVC & Laravel</h2>
+
+    <div class="qa-card success">
+        <div class="qa-question"><span class="badge badge-arch">MVC</span> คำถามที่ 1: ทำไมโค้ดการปิดเครื่องและคิดเงินถึงถูกแยกออกมาเป็น Service Class <code>EndSeatSession</code>?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เพื่อรักษาหลัก DRY (Don't Repeat Yourself) และความสม่ำเสมอของ Business Logic การปิดเครื่องในระบบนี้เกิดขึ้นได้จาก 3 ทาง:
+            <ul>
+                <li>ลูกค้ากดเช็คเอาท์เองจากหน้า Dashboard (<span class="file-tag">DashboardController.php</span>)</li>
+                <li>ระบบตัดจบอัตโนมัติเมื่อเงินหรือเวลาหมด (<span class="file-tag">autoEndExpiredSessions()</span>)</li>
+                <li>พนักงานกดปุ่ม Force End หน้าร้าน (<span class="file-tag">StaffController.php</span>)</li>
+            </ul>
+            ทั้ง 3 ทางต้องใช้สูตรคำนวณเวลา ปรับสถานะเครื่อง ปรับเวลาแพ็กเกจ และบันทึกประวัติการเงินชุดเดียวกัน การรวมไว้ใน <span class="file-tag">app/Services/EndSeatSession.php</span> ช่วยป้องกันข้อผิดพลาดจากสูตรคิดเงินไม่ตรงกัน
+        </div>
+    </div>
+
+    <div class="qa-card success">
+        <div class="qa-question"><span class="badge badge-sec">SECURITY</span> คำถามที่ 2: ระบบป้องกันไม่ให้ผู้ใช้ทั่วไปแอบเข้าหน้าของพนักงานหรือแอดมินได้อย่างไร?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> ใช้การป้องกัน 2 ระดับ:
+            <ul>
+                <li>ระดับเส้นทาง (Route): ใน <span class="file-tag">routes/web.php</span> เส้นทางทั้งหมดถูกครอบด้วย <code>Route::middleware(['auth'])</code> เพื่อบังคับให้ผู้ใช้ต้องล็อกอินก่อนเสมอ</li>
+                <li>ระดับตัวควบคุม (Controller): ใน <span class="file-tag">StaffController.php</span> มีเมธอด <code>authorizeStaff()</code> ตรวจสอบ <code>role === 'staff' || role === 'admin'</code> และใน <span class="file-tag">AdminController.php</span> มี <code>authorizeAdmin()</code> ตรวจสอบ <code>role === 'admin'</code> หากไม่ผ่านเงื่อนไข ระบบจะสั่ง <code>abort(403)</code> ปฏิเสธการเข้าถึงทันที</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card success">
+        <div class="qa-question"><span class="badge badge-sec">SECURITY</span> คำถามที่ 3: ระบบป้องกัน SQL Injection และ XSS (Cross-Site Scripting) อย่างไร?</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong>
+            <ul>
+                <li><strong>SQL Injection:</strong> โค้ดทั้งหมดใช้ Eloquent ORM และ Query Builder ซึ่งส่งผ่านคำสั่งแบบ Parameter Binding (PDO Prepared Statements) อัตโนมัติ ข้อมูลที่ผู้ใช้กรอกเข้ามาจะถูกมองเป็นค่า Value ไม่ถูกนำไปประมวลผลเป็นคำสั่ง SQL</li>
+                <li><strong>XSS:</strong> ใน Blade Templates แสดงผลข้อความด้วย <code>{{ $variable }}</code> ซึ่ง Laravel จะครอบด้วยฟังก์ชัน <code>htmlspecialchars()</code> เพื่อแปลงอักขระพิเศษ (เช่น &lt;, &gt;, &quot;) เป็น HTML Entities เสมอ</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card success">
+        <div class="qa-question"><span class="badge badge-arch">MVC</span> คำถามที่ 4: จงอธิบายเส้นทางของข้อมูล (Lifecycle Flow) เมื่อลูกค้ากดเช็คอินเปิดเครื่อง</div>
+        <div class="qa-answer">
+            <strong>คำตอบ:</strong> เส้นทางของข้อมูลวิ่งข้าม Layer ดังนี้:
+            <pre>
+หน้าเว็บ (seat-map.blade.php) ส่งฟอร์ม POST /check-in พร้อม seat_id, billing_mode
+    → routes/web.php จับคู่เรียก SeatController@checkIn
+        → ตรวจสอบ Request Validation
+            → ตรวจสอบสถานะและ Atomic Update ตาราง seats ('occupied')
+                → Eloquent สร้างแถวใหม่ในตาราง seat_sessions (status: 'active')
+                    → redirect กลับไปที่ Route 'dashboard' พร้อม Session Flash Success</pre>
+        </div>
+    </div>
+
+    <h2>5. เจาะลึกแนวคำถามรายบุคคล (ตามการแบ่งงาน 5 คน)</h2>
+
+    <div class="qa-card accent">
+        <div class="qa-question">1. ปาล์ม (Dashboard, Seat Map, Auth)</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>ถาม:</strong> ทำไมหน้า Dashboard ต้องเรียก <code>autoEndExpiredSessions()</code> ทุกครั้งที่โหลดหน้า?</li>
+                <li><strong>ตอบ:</strong> เนื่องจากโปรเจกต์นี้ไม่ได้เปิด Worker หรือ Cron Job ทำงานเบื้องหลังตลอดเวลา การเช็คใน DashboardController ก่อนดึงข้อมูลทำให้เมื่อผู้ใช้เปิดหน้าเว็บ ระบบจะตรวจสอบเวลาที่ใช้ไปเทียบกับเวลาของแพ็กเกจหรือเงินคงเหลือ หากหมดจะทำการตัดจบและคืนเครื่องให้ว่างทันที</li>
+                <li><strong>ถาม:</strong> สูตรคำนวณเวลาที่ใช้ไปในปัจจุบันคิดอย่างไร?</li>
+                <li><strong>ตอบ:</strong> ใช้ <code>diffInSeconds(Carbon::now())</code> จากเวลา <code>start_time</code> แล้วนำมาหาร 60 ปัดเศษขึ้นด้วย <code>ceil()</code> และกำหนดค่าต่ำสุดที่ 1 นาที</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question">2. ตอง (Food Order, Cart, Wallet & Packages)</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>ถาม:</strong> เวลาลูกค้าซื้อแพ็กเกจชั่วโมง มีขั้นตอนอย่างไรในฐานข้อมูล?</li>
+                <li><strong>ตอบ:</strong> ตรวจสอบเงินในกระเป๋า เปิด <code>DB::transaction()</code> หักเงินจาก <code>users.balance</code> บันทึกประวัติลง <code>wallet_transactions</code> (ref_type: package_purchase) และสร้างเรคคอร์ดใน <code>user_packages</code> กำหนดจำนวนนาที และตั้งวันหมดอายุล่วงหน้า 30 วัน</li>
+                <li><strong>ถาม:</strong> หน้าสั่งอาหารรู้ได้อย่างไรว่าจะต้องส่งอาหารไปที่เครื่องคอมพิวเตอร์เครื่องไหน?</li>
+                <li><strong>ตอบ:</strong> ระบบค้นหาจาก Active Session ของผู้ใช้ <code>SeatSession::where('user_id', $user->id)->where('status', 'active')->first()</code> แล้วดึง <code>seat_id</code> มาผูกกับออเดอร์อัตโนมัติ ลูกค้าไม่ต้องกรอกเอง</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="qa-card accent">
+        <div class="qa-question">3. ดิว (Staff Monitor, Kitchen Queue, Admin Report)</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>ถาม:</strong> ถ้าในครัวกดยกเลิกออเดอร์ (Cancel) ระบบคืนสต็อกสินค้าอย่างไร?</li>
+                <li><strong>ตอบ:</strong> ใน <span class="file-tag">StaffController.php</span> เมื่อสถานะเปลี่ยนเป็น <code>cancelled</code> ระบบจะวนลูปอ่านสินค้าใน <code>order->items</code> แล้วนำจำนวนชิ้นที่สั่งบวกกลับเข้า <code>products.stock_quantity</code> ทันที</li>
+                <li><strong>ถาม:</strong> รายงานยอดขายดึง 5 อันดับเมนูขายดีด้วยคำสั่ง SQL อะไร?</li>
+                <li><strong>ตอบ:</strong> JOIN ตาราง <code>order_items</code>, <code>orders</code>, และ <code>products</code> กรองบิลที่ชำระเงินแล้ว ใช้ <code>SUM(quantity) as total_qty</code>, <code>GROUP BY products.id</code> และจัดเรียงด้วย <code>orderByDesc('total_qty')->limit(5)</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question">4. บอล (Database: Master Data & Sessions)</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>ถาม:</strong> อธิบายความสัมพันธ์ระหว่างตาราง <code>zones</code>, <code>seats</code> และ <code>seat_sessions</code></li>
+                <li><strong>ตอบ:</strong> <code>Zone</code> มีความสัมพันธ์แบบ One-to-Many กับ <code>Seat</code> (1 โซนมีหลายเครื่อง) และ <code>Seat</code> มีความสัมพันธ์แบบ One-to-Many กับ <code>SeatSession</code> (1 เครื่องมีประวัติการเข้าใช้งานได้หลายครั้ง)</li>
+                <li><strong>ถาม:</strong> ในตาราง <code>seat_sessions</code> ทำไม <code>user_package_id</code> ต้องเป็น Nullable?</li>
+                <li><strong>ตอบ:</strong> เพื่อรองรับการเล่น 2 รูปแบบ ถ้าเล่นด้วยแพ็กเกจจะเก็บ ID ของ <code>user_packages</code> เพื่อตัดเวลา แต่ถ้าเล่นแบบคิดเงินตามจริง (Pay as you go) จะเป็น NULL เพื่อให้คิดเงินตามอัตรา <code>rate_snapshot</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card accent">
+        <div class="qa-question">5. นะโม (Database: Transactions, Orders & Products)</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>ถาม:</strong> ในตาราง <code>orders</code> และ <code>order_items</code> คอลัมน์ <code>total_amount</code> กับ <code>subtotal</code> ต่างกันอย่างไร?</li>
+                <li><strong>ตอบ:</strong> <code>subtotal</code> อยู่ใน <code>order_items</code> เก็บราคารวมของสินค้ารายการนั้น (quantity * unit_price) ส่วน <code>total_amount</code> อยู่ใน <code>orders</code> เก็บผลรวมของทุกรายการในบิล</li>
+                <li><strong>ถาม:</strong> ทำไมตาราง <code>wallet_transactions</code> ต้องมีทั้ง <code>ref_type</code> และ <code>ref_id</code>?</li>
+                <li><strong>ตอบ:</strong> เพื่อรองรับความสัมพันธ์แบบ Polymorphic โดยย่อ <code>ref_type</code> ระบุประเภทตารางต้นทาง (เช่น session, food_order, package_purchase) และ <code>ref_id</code> เก็บ Primary Key ของตารางนั้นๆ</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>6. แนวทางการเตรียมตัวและการสาธิตหน้าห้องสอบ (Demo Strategy)</h2>
+    <div class="qa-card success">
+        <div class="qa-question">การเตรียมพร้อมก่อนขึ้นพรีเซนต์</div>
+        <div class="qa-answer">
+            <ul>
+                <li><strong>เปิด Terminal รันระบบไว้ล่วงหน้า:</strong> รันคำสั่ง <code>php artisan serve</code></li>
+                <li><strong>เตรียมเบราว์เซอร์แยก 3 หน้าต่าง (สำหรับ 3 Role):</strong>
+                    <ul>
+                        <li>หน้าต่าง 1 (ลูกค้า): บัญชี <code>customer1</code> (รหัสผ่าน <code>1</code>)</li>
+                        <li>หน้าต่าง 2 (พนักงาน): บัญชี <code>staff</code> (รหัสผ่าน <code>password</code>)</li>
+                        <li>หน้าต่าง 3 (ผู้ดูแลระบบ): บัญชี <code>admin</code> (รหัสผ่าน <code>password</code>)</li>
+                    </ul>
+                </li>
+                <li><strong>เปิดโปรแกรมดูฐานข้อมูลจริง:</strong> เปิดไฟล์ <code>database/database.sqlite</code> ด้วย SQLite Viewer หรือ DB Browser for SQLite เพื่อให้อาจารย์เห็นว่าข้อมูลในตารางถูกบันทึกจริง</li>
+                <li><strong>คำสั่งไม้ตายเมื่ออาจารย์ถามเรื่องความถูกต้องของระบบ:</strong> เปิด Terminal แล้วรันคำสั่ง <code>php artisan test</code> ซึ่งชุดทดสอบ Pest ทั้ง 53 เคสจะรันผ่านทั้งหมด ยืนยันว่าระบบไม่มีบั๊กและผ่านการทดสอบตามมาตรฐานสากล</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card warning">
+        <div class="qa-question">ข้อควรระวังเมื่อ zip โปรเจกต์ส่งต่อหรือย้ายเครื่อง</div>
+        <div class="qa-answer">
+            หากย้ายไฟล์โปรเจกต์ไปเปิดที่เครื่องอื่นแล้วพบข้อผิดพลาด <code>filemtime(): stat failed</code> ใน <code>storage/framework/views</code> สาเหตุเกิดจากไฟล์แคชของ Blade และ Livewire จากเครื่องเดิมตกค้างอยู่ วิธีแก้คือเปิด Terminal ที่เครื่องใหม่แล้วรันคำสั่ง:
+            <pre>php artisan optimize:clear</pre>
+            ระบบจะล้างแคชเก่าทิ้งทั้งหมด และสร้างไฟล์แคชใหม่ที่ตรงกับเครื่องนั้นทันที
+        </div>
+    </div>
+
+    <div class="footer-note">
+        เอกสารสำหรับโครงการพัฒนาระบบบริหารจัดการร้านเกมคาเฟ่ LETSPLAY Gaming Cafe Management System (Laravel 13 + SQLite)
+    </div>
+
+</body>
+</html>

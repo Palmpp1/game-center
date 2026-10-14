@@ -1,7 +1,6 @@
 <x-layouts::app :title="__('Stock Manager')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
-        @if (session()->has('success'))
+                @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 mb-0 shadow-sm" role="alert">
                 <i class="bi bi-check-circle-fill fs-5"></i>
                 <div>{{ session('success') }}</div>
@@ -14,8 +13,7 @@
             </div>
         @endif
 
-        <!-- Header Card -->
-        <div class="card p-4 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 shadow-sm">
+                <div class="card p-4 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 shadow-sm">
             <div>
                 <div class="step-header">
                     <span class="step-bar"></span>
@@ -34,7 +32,7 @@
             </button>
         </div>
 
-        <!-- Products Table -->
+        <!-- รายการสินค้าและสต็อก -->
         <div class="card p-3 p-md-4 shadow-sm">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -94,7 +92,7 @@
             </div>
         </div>
 
-        <!-- Create Product Modal -->
+        <!-- Modal เพิ่มสินค้าใหม่ -->
         <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-secondary shadow-lg">

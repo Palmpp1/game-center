@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('Dashboard')">
     <div class="d-flex flex-column gap-4">
-        <!-- 1. Marquee Bar: ข่าวสารและประกาศของทางร้าน -->
+        <!-- แถบประกาศร้าน -->
         <div class="card bg-dark border-danger-subtle rounded-3 py-2 px-3 shadow-sm">
             <div class="d-flex align-items-center gap-3 overflow-hidden">
                 <div class="badge bg-danger-subtle text-danger border border-danger-subtle py-1.5 px-3 d-flex align-items-center gap-1.5 flex-shrink-0">
@@ -18,7 +18,6 @@
                         <span class="text-secondary">•</span>
                         <span><strong class="text-info"><i class="bi bi-arrow-repeat me-1"></i> อัปเดตแพตช์เกม:</strong> เครื่องทุกโซนอัปเดตเกมเวอร์ชันล่าสุดพร้อมเข้าเล่นทันที</span>
 
-                        <!-- Loop duplication -->
                         <span class="text-secondary ms-4">•</span>
                         <span><strong class="text-warning"><i class="bi bi-moon-stars me-1"></i> ช่วงเวลาเหมาดึก:</strong> 23:00 - 06:00 น. ซื้อแพ็กเกจกลางคืนได้ที่หน้าเติมเงิน</span>
                         <span class="text-secondary">•</span>
@@ -28,7 +27,7 @@
             </div>
         </div>
 
-        <!-- Notifications -->
+        <!-- ข้อความแจ้งเตือน -->
         @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 border-success-subtle bg-success-subtle text-success py-3 px-4 rounded-3 m-0 shadow-sm">
                 <i class="bi bi-check-circle-fill fs-5"></i>
@@ -42,8 +41,8 @@
             </div>
         @endif
 
-        <!-- 2. Time Warning Alert: แจ้งเตือนก่อนเวลาหมด 15 นาที -->
-        @if ($sessionRemainingMinutes !== null && $sessionRemainingMinutes <= 15)
+        <!-- แจ้งเตือนเวลาใกล้หมด -->
+        @if ($sessionRemainingMinutes !== null && $sessionRemainingMinutes <= 3)
             <div class="alert alert-danger border-danger-subtle bg-danger-subtle text-danger d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-3 rounded-4 shadow-sm m-0 gap-3">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-3 bg-danger text-white d-flex align-items-center justify-content-center fs-4 flex-shrink-0" style="width: 44px; height: 44px;">
@@ -68,66 +67,65 @@
                 </div>
             </div>
 
-            <!-- Pop-up Modal แจ้งเตือน 15 นาทีสุดท้าย -->
-            <div
-                id="timeExpiringModal"
-                x-data="{ showWarningModal: true }"
-                x-show="showWarningModal"
-                x-cloak
-                class="position-fixed top-0 start-0 w-100 h-100 overflow-auto"
-                style="z-index: 1055; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);"
-            >
-                <div class="min-vh-100 d-flex align-items-center justify-content-center p-3">
-                    <div class="modal-dialog modal-dialog-centered w-100 m-0" style="max-width: 500px;">
-                        <div class="modal-content border-danger shadow-lg p-3 text-center bg-dark">
-                            <div class="modal-body">
-                                <div class="mx-auto rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 28px;">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                </div>
-                                <span class="badge bg-danger-subtle text-danger mb-2">TIME EXPIRING SOON</span>
-                                <h3 class="h5 fw-bold text-white mb-2">
-                                    เวลาใช้งานของคุณใกล้จะหมดแล้ว!
-                                </h3>
-                                <p class="small text-secondary mb-3">
-                                    เหลือเวลาใช้งานอีกประมาณ <span class="text-danger fw-bold fs-6">{{ \App\Models\UserPackage::formatMinutes($sessionRemainingMinutes) }}</span>
-                                </p>
+        <!-- Modal แจ้งเตือนเวลาใกล้หมด -->
+        <div
+            id="timeExpiringModal"
+            x-data="{ showWarningModal: true }"
+            x-show="showWarningModal"
+            x-cloak
+            class="position-fixed top-0 start-0 w-100 h-100 overflow-auto"
+            style="z-index: 1055; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);"
+        >
+            <div class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+                <div class="modal-dialog modal-dialog-centered w-100 m-0" style="max-width: 500px;">
+                    <div class="modal-content border-danger shadow-lg p-3 text-center bg-dark">
+                        <div class="modal-body">
+                            <div class="mx-auto rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 28px;">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </div>
+                            <span class="badge bg-danger-subtle text-danger mb-2">TIME EXPIRING SOON</span>
+                            <h3 class="h5 fw-bold text-white mb-2">
+                                เวลาใช้งานของคุณใกล้จะหมดแล้ว!
+                            </h3>
+                            <p class="small text-secondary mb-3">
+                                เหลือเวลาใช้งานอีกประมาณ <span class="text-danger fw-bold fs-6">{{ \App\Models\UserPackage::formatMinutes($sessionRemainingMinutes) }}</span>
+                            </p>
 
-                                <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle text-start small mb-3">
-                                    @if ($activeSession)
-                                        <div class="d-flex justify-content-between mb-1.5">
-                                            <span class="text-secondary">เครื่องที่กำลังใช้งาน:</span>
-                                            <span class="fw-bold text-white">เครื่อง {{ $activeSession->seat->seat_number }} ({{ $activeSession->seat->zone->name }})</span>
-                                        </div>
-                                    @endif
-                                    <div class="d-flex justify-content-between">
-                                        <span class="text-secondary">ยอดเงินในกระเป๋าคงเหลือ:</span>
-                                        <span class="fw-bold font-monospace text-warning">฿{{ number_format($user->balance, 2) }}</span>
+                            <div class="p-3 rounded-3 bg-dark-subtle border border-secondary-subtle text-start small mb-3">
+                                @if ($activeSession)
+                                    <div class="d-flex justify-content-between mb-1.5">
+                                        <span class="text-secondary">เครื่องที่กำลังใช้งาน:</span>
+                                        <span class="fw-bold text-white">เครื่อง {{ $activeSession->seat->seat_number }} ({{ $activeSession->seat->zone->name }})</span>
                                     </div>
+                                @endif
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-secondary">ยอดเงินในกระเป๋าคงเหลือ:</span>
+                                    <span class="fw-bold font-monospace text-warning">฿{{ number_format($user->balance, 2) }}</span>
                                 </div>
+                            </div>
 
-                                <div class="d-flex flex-column gap-2">
-                                    <a href="{{ route('customer.topup') }}" class="btn btn-danger btn-sm fw-bold py-2">
-                                        <i class="bi bi-wallet2 me-1"></i> เติมเงินหรือซื้อแพ็กเกจชั่วโมง
-                                    </a>
-                                    <button
-                                        type="button"
-                                        @click="showWarningModal = false"
-                                        onclick="document.getElementById('timeExpiringModal').style.display='none'"
-                                        class="btn btn-outline-secondary btn-sm py-2"
-                                    >
-                                        รับทราบ (ปิดหน้าต่างนี้)
-                                    </button>
-                                </div>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="{{ route('customer.topup') }}" class="btn btn-danger btn-sm fw-bold py-2">
+                                    <i class="bi bi-wallet2 me-1"></i> เติมเงินหรือซื้อแพ็กเกจชั่วโมง
+                                </a>
+                                <button
+                                    type="button"
+                                    @click="showWarningModal = false"
+                                    onclick="document.getElementById('timeExpiringModal').style.display='none'"
+                                    class="btn btn-outline-secondary btn-sm py-2"
+                                >
+                                    รับทราบ (ปิดหน้าต่างนี้)
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
+    @endif
 
-        <!-- Profile & Wallet Summary Cards -->
+        <!-- ข้อมูลสมาชิก -->
         <div class="row g-4">
-            <!-- User Profile Card -->
             <div class="col-12 col-md-4">
                 <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                     <div>
@@ -146,7 +144,7 @@
                 </div>
             </div>
 
-            <!-- Wallet Balance Card -->
+            <!-- ยอดเงินในกระเป๋า -->
             <div class="col-12 col-md-4">
                 <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                     <div>
@@ -181,7 +179,7 @@
                 </div>
             </div>
 
-            <!-- Packages Card -->
+            <!-- แพ็กเกจชั่วโมง -->
             <div class="col-12 col-md-4">
                 <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column justify-content-between shadow-sm">
                     <div>
@@ -207,7 +205,7 @@
             </div>
         </div>
 
-        <!-- Active Session Section -->
+        <!-- สถานะการใช้งานเครื่องปัจจุบัน -->
         <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
             <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom border-secondary-subtle pb-3 mb-4 gap-2">
                 <div class="d-flex align-items-center gap-2">
@@ -293,7 +291,7 @@
             @endif
         </div>
 
-        <!-- Active Packages List by Zone -->
+        <!-- รายการแพ็กเกจชั่วโมงที่พร้อมใช้งาน -->
         @if ($userPackages->isNotEmpty())
             <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -339,9 +337,8 @@
             </div>
         @endif
 
-        <!-- Tables: Recent Transactions and Recent Orders -->
         <div class="row g-4">
-            <!-- Wallet History -->
+            <!-- ประวัติการทำรายการกระเป๋าเงิน -->
             <div class="col-12 col-lg-6">
                 <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -413,7 +410,7 @@
                 </div>
             </div>
 
-            <!-- Recent Food Orders -->
+            <!-- รายการสั่งอาหารล่าสุด -->
             <div class="col-12 col-lg-6">
                 <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                     <div class="d-flex align-items-center justify-content-between mb-3">

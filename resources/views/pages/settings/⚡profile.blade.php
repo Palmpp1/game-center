@@ -123,6 +123,21 @@ new #[Title('Profile settings')] class extends Component {
             </div>
         </form>
 
+        <flux:separator class="my-8" />
+
+        <div class="space-y-3">
+            <flux:heading level="3">{{ __('โหมดการแสดงผล') }}</flux:heading>
+            <flux:subheading>{{ __('ปรับแต่งธีมการแสดงผลของระบบ') }}</flux:subheading>
+
+            <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
+                <flux:radio value="light" icon="sun">{{ __('Light') }}</flux:radio>
+                <flux:radio value="dark" icon="moon">{{ __('Dark') }}</flux:radio>
+                <flux:radio value="system" icon="computer-desktop">{{ __('System') }}</flux:radio>
+            </flux:radio.group>
+        </div>
+
+        <flux:separator class="my-8" />
+
         {{-- @chisel-email-verification --}}
         @if ($this->showDeleteUser)
         {{-- @end-chisel-email-verification --}}

@@ -21,7 +21,7 @@
             }
         @endphp
 
-        <!-- Floating Status Bar (วิดเจ็ตแสดงสถานะเครื่องมุมจอ) -->
+        <!-- แถบแสดงสถานะเครื่องมุมจอ -->
         <div
             x-data="{
                 minimized: true,
@@ -52,31 +52,29 @@
             class="position-fixed bottom-0 end-0 m-4"
             style="z-index: 1045; user-select: none;"
         >
-            <!-- Minimized Pill (แยกครอบด้วย div ที่ไม่มี d-flex เพื่อป้องกัน Bootstrap !important ขัดขวาง x-show) -->
-            <div x-show="minimized" x-cloak>
+                        <div x-show="minimized" x-cloak>
                 <div
                     @click="minimized = false"
-                    class="badge bg-dark border border-danger-subtle rounded-pill py-2.5 px-3.5 shadow-lg d-flex align-items-center gap-2 cursor-pointer hover-border-danger"
+                    class="badge bg-dark border border-danger-subtle rounded-pill py-2.5 px-3.5 shadow-lg d-flex align-items-center gap-2 cursor-pointer hover-border-danger hud-pill"
                     style="cursor: pointer;"
                 >
                     <span class="spinner-grow spinner-grow-sm text-success" style="width: 8px; height: 8px;"></span>
-                    <span class="font-monospace text-white fw-bold">เครื่อง {{ $hudSession->seat->seat_number }}</span>
-                    <span class="text-secondary">|</span>
+                    <span class="font-monospace fw-bold hud-seat-label">เครื่อง {{ $hudSession->seat->seat_number }}</span>
+                    <span class="text-secondary opacity-75">|</span>
                     @if ($hudRemainingMinutes !== null)
-                        <span class="text-warning font-monospace fw-bold" x-text="'เหลือ ' + formatDHMS(remainingSeconds)"></span>
+                        <span class="font-monospace fw-bold hud-time-warning" x-text="'เหลือ ' + formatDHMS(remainingSeconds)"></span>
                     @else
-                        <span class="text-light font-monospace fw-bold" x-text="'เล่นไป ' + formatDHMS(elapsedSeconds)"></span>
+                        <span class="font-monospace fw-bold hud-time-elapsed" x-text="'เล่นไป ' + formatDHMS(elapsedSeconds)"></span>
                     @endif
-                    <span class="text-secondary">|</span>
+                    <span class="text-secondary opacity-75">|</span>
                     <span class="text-success font-monospace fw-bold">฿{{ number_format($hudEstimatedCost, 2) }}</span>
                     <span class="badge bg-secondary-subtle text-secondary rounded-circle ms-1">+</span>
                 </div>
             </div>
 
-            <!-- Expanded Card -->
-            <div x-show="!minimized" x-cloak>
+                        <div x-show="!minimized" x-cloak>
                 <div
-                    class="card bg-dark border-secondary-subtle rounded-4 p-3 shadow-lg"
+                    class="card bg-dark border-secondary-subtle rounded-4 p-3 shadow-lg hud-card"
                     style="width: 360px; max-width: calc(100vw - 2rem);"
                 >
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle pb-2 mb-2 gap-2">
@@ -111,7 +109,7 @@
                                 <small class="text-secondary d-block">
                                     {{ $hudRemainingMinutes !== null ? 'เวลาคงเหลือ' : 'เวลาที่เล่นไปแล้ว' }}
                                 </small>
-                                <span class="fw-bold font-monospace fs-7 {{ $hudRemainingMinutes !== null && $hudRemainingMinutes <= 15 ? 'text-danger' : 'text-warning' }}">
+                                <span class="fw-bold font-monospace fs-7 {{ $hudRemainingMinutes !== null && $hudRemainingMinutes <= 15 ? 'text-danger' : 'hud-time-warning' }}">
                                     @if ($hudRemainingMinutes !== null)
                                         <span x-text="formatDHMS(remainingSeconds)"></span>
                                     @else
@@ -132,12 +130,12 @@
 
                     <div class="row g-1 pt-1">
                         <div class="col-4">
-                            <a href="{{ route('customer.food-order') }}?seat_id={{ $hudSession->seat_id }}" class="btn btn-outline-secondary text-light btn-sm w-100 py-1">
+                            <a href="{{ route('customer.food-order') }}?seat_id={{ $hudSession->seat_id }}" class="btn btn-outline-secondary btn-sm w-100 py-1">
                                 <i class="bi bi-cup-hot me-1"></i> สั่งอาหาร
                             </a>
                         </div>
                         <div class="col-4">
-                            <a href="{{ route('customer.topup') }}" class="btn btn-outline-secondary text-light btn-sm w-100 py-1">
+                            <a href="{{ route('customer.topup') }}" class="btn btn-outline-secondary btn-sm w-100 py-1">
                                 <i class="bi bi-wallet2 me-1"></i> เติมเงิน
                             </a>
                         </div>

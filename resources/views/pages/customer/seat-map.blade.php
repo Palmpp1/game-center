@@ -1,7 +1,6 @@
 <x-layouts::app :title="__('Seat Map')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
-        @if (session()->has('success'))
+                @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 border-success-subtle bg-success-subtle text-success py-3 px-4 rounded-3 m-0 shadow-sm">
                 <i class="bi bi-check-circle-fill fs-5"></i>
                 <div>{{ session('success') }}</div>
@@ -14,7 +13,7 @@
             </div>
         @endif
 
-        <!-- Header & Status Legend -->
+                <!-- แถบสถานะที่นั่ง -->
         <div class="card bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 shadow-sm">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
@@ -33,13 +32,14 @@
                     <span class="badge bg-danger rounded-circle p-1"></span>
                     <span>มีผู้ใช้งานอยู่</span>
                 </div>
-                <div class="badge bg-dark-subtle border border-secondary-subtle text-secondary d-flex align-items-center gap-2 py-2 px-3">
-                    <span class="badge bg-secondary rounded-circle p-1"></span>
+                <div class="badge bg-dark-subtle border border-warning-subtle text-warning d-flex align-items-center gap-2 py-2 px-3">
+                    <span class="badge bg-warning rounded-circle p-1"></span>
                     <span>ปิดปรับปรุง</span>
                 </div>
             </div>
         </div>
 
+        <!-- เครื่องที่กำลังใช้งาน -->
         @if ($activeSession)
             <div class="card bg-dark border-warning rounded-4 p-3.5 shadow-sm">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
@@ -72,7 +72,7 @@
             </div>
         @endif
 
-        <!-- Zone Map Sections -->
+        <!-- ผังที่นั่งแต่ละโซน -->
         @foreach ($zones as $zone)
             <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom border-secondary-subtle pb-3 mb-4 gap-2">
@@ -88,8 +88,7 @@
                     </span>
                 </div>
 
-                <!-- Seat Grid -->
-                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+                                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
                     @foreach ($zone->seats as $seat)
                         @php
                             $isCurrent = $activeSession && $activeSession->seat_id === $seat->id;
@@ -108,7 +107,7 @@
                                         @elseif($seat->status === 'occupied')
                                             bg-dark border-secondary-subtle opacity-50 cursor-not-allowed
                                         @else
-                                            bg-dark border-secondary-subtle opacity-25 cursor-not-allowed
+                                            bg-dark-subtle border-warning-subtle opacity-75 cursor-not-allowed
                                         @endif
                                     @endif
                                 "
@@ -117,10 +116,10 @@
                                     @if($isCurrent) text-warning
                                     @elseif($seat->status === 'available') text-success
                                     @elseif($seat->status === 'occupied') text-danger
-                                    @else text-secondary
+                                    @else text-warning
                                     @endif
                                 ">
-                                    <i class="bi bi-display"></i>
+                                    <i class="bi bi-tools"></i>
                                 </div>
 
                                 <div class="fs-4 fw-black font-monospace text-white">
@@ -131,13 +130,13 @@
                                     @if($isCurrent) text-warning
                                     @elseif($seat->status === 'available') text-success
                                     @elseif($seat->status === 'occupied') text-danger
-                                    @else text-secondary
+                                    @else text-warning
                                     @endif
                                 ">
                                     @if($isCurrent) เครื่องของคุณ
                                     @elseif($seat->status === 'available') {{ $activeSession ? 'ว่าง' : 'คลิกเพื่อเปิดเครื่อง' }}
                                     @elseif($seat->status === 'occupied') ไม่ว่าง
-                                    @else ปรับปรุง
+                                    @else ปิดปรับปรุง
                                     @endif
                                 </small>
                             </div>
@@ -147,7 +146,7 @@
             </div>
         @endforeach
 
-        <!-- Check-in Confirmation Bootstrap Modal -->
+        <!-- Modal ยืนยันเปิดเครื่อง -->
         <div class="modal fade" id="checkInModal" tabindex="-1" aria-labelledby="checkInModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-dark border border-danger-subtle rounded-4 p-4 shadow-lg">
@@ -184,14 +183,14 @@
                                 <span class="text-secondary">เวลาที่เล่นได้โดยประมาณ:</span>
                                 <strong class="text-info font-monospace fs-6" id="modalPlayableTime">-</strong>
                             </div>
-                            @if ((float)(auth()->user()->balance ?? 0) < 20.00)
+                            @if ((float)(auth()->user()->balance ?? 0) <= 0.00)
                                 <div id="insufficientBalanceAlert" class="alert alert-danger p-2.5 small mt-2 mb-0">
                                     <div class="d-flex align-items-center gap-1.5 fw-bold text-danger">
                                         <i class="bi bi-exclamation-triangle-fill"></i>
-                                        <span>ยอดเงินไม่พอสำหรับการเปิดเครื่อง</span>
+                                        <span>ยอดเงินในกระเป๋าหมดแล้ว</span>
                                     </div>
                                     <div class="mt-1 text-light">
-                                        การเล่นแบบคิดตามจริงต้องมียอดเงินอย่างน้อย ฿20.00 (คุณมี ฿{{ number_format(auth()->user()->balance ?? 0, 2) }})
+                                        การเล่นแบบคิดตามจริงต้องมียอดเงินในกระเป๋า (คุณมี ฿{{ number_format(auth()->user()->balance ?? 0, 2) }})
                                     </div>
                                     <div class="mt-2">
                                         <a href="{{ route('customer.topup') }}" class="btn btn-warning btn-sm py-1 px-3 fw-bold">
@@ -202,8 +201,7 @@
                             @endif
                         </div>
 
-                        <!-- Choose Billing Mode -->
-                        <div>
+                                                <div>
                             <label class="form-label text-secondary small fw-bold text-uppercase">เลือกรูปแบบการชำระเงิน:</label>
 
                             <div class="d-flex flex-column gap-2">
@@ -280,12 +278,12 @@
 
             const rate = Number(hourlyRate);
             const totalMinutes = Math.floor((userBalance / rate) * 60);
-            if (userBalance >= 20 && rate > 0) {
+            if (userBalance > 0 && rate > 0) {
                 const hours = Math.floor(totalMinutes / 60);
                 const mins = totalMinutes % 60;
                 document.getElementById('modalPlayableTime').innerText = hours > 0 ? `${hours} ชม ${mins} นาที` : `${mins} นาที`;
             } else {
-                document.getElementById('modalPlayableTime').innerText = 'ยอดเงินไม่พอ (ขั้นต่ำ ฿20.00)';
+                document.getElementById('modalPlayableTime').innerText = 'ยอดเงินไม่พอ (ยอดเงินคงเหลือ ฿0.00)';
             }
 
             filterPackagesForZone(zoneId);
@@ -301,7 +299,7 @@
             const submitBtn = document.getElementById('submitCheckInBtn');
             const isPayAsYouGo = payRadio ? payRadio.checked : true;
 
-            if (isPayAsYouGo && userBalance < 20) {
+            if (isPayAsYouGo && userBalance <= 0) {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-50');
             } else {

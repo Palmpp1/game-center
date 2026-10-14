@@ -2,13 +2,11 @@
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+                <x-auth-session-status class="text-center" :status="session('status')" />
 
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
-            <!-- Name -->
-            <flux:input
+                        <flux:input
                 name="name"
                 :label="__('Name')"
                 :value="old('name')"
@@ -19,8 +17,7 @@
                 :placeholder="__('Full name')"
             />
 
-            <!-- Email Address -->
-            <flux:input
+                        <flux:input
                 name="email"
                 :label="__('Email address')"
                 :value="old('email')"
@@ -30,8 +27,7 @@
                 placeholder="email@example.com"
             />
 
-            <!-- Password -->
-            <flux:input
+                        <flux:input
                 name="password"
                 :label="__('Password')"
                 type="password"
@@ -42,8 +38,7 @@
                 viewable
             />
 
-            <!-- Confirm Password -->
-            <flux:input
+                        <flux:input
                 name="password_confirmation"
                 :label="__('Confirm password')"
                 type="password"

@@ -1,6 +1,5 @@
 <x-layouts::app :title="__('Order Food & Beverages')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
         @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 border-success-subtle bg-success-subtle text-success py-3 px-4 rounded-3 m-0 shadow-sm">
                 <i class="bi bi-check-circle-fill fs-5"></i>
@@ -14,7 +13,7 @@
             </div>
         @endif
 
-        <!-- Active Seat Banner -->
+                <!-- เครื่องที่กำลังใช้งาน -->
         @if ($activeSeat)
             <div class="alert alert-dark border-secondary-subtle bg-dark d-flex justify-content-between align-items-center p-3 rounded-4 shadow-sm m-0">
                 <div class="d-flex align-items-center gap-2">
@@ -49,7 +48,7 @@
         @endif
 
         <div class="row g-4 {{ ! $activeSeat ? 'opacity-75' : '' }}">
-            <!-- Products & Menu Section -->
+            <!-- รายการเมนูอาหาร -->
             <div class="col-12 col-lg-8 d-flex flex-column gap-4">
                 <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                     <div class="d-flex align-items-center gap-2 mb-2">
@@ -62,7 +61,6 @@
                         เลือกเมนูอาหารตามสั่ง ของทานเล่น และเครื่องดื่ม ส่งตรงถึงโต๊ะคอมพิวเตอร์ของคุณ
                     </small>
 
-                    <!-- Category Filters -->
                     <div class="d-flex flex-wrap gap-2 pt-3 border-top border-secondary-subtle">
                         <a
                             href="{{ route('customer.food-order') }}"
@@ -81,7 +79,6 @@
                     </div>
                 </div>
 
-                <!-- Products Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 g-3">
                     @forelse ($products as $prod)
                         <div class="col">
@@ -149,7 +146,7 @@
                 </div>
             </div>
 
-            <!-- Cart & Checkout Sidebar -->
+            <!-- ตะกร้าสินค้า -->
             <div class="col-12 col-lg-4">
                 <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm sticky-top" style="top: 80px;">
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle pb-3 mb-3">
@@ -164,7 +161,6 @@
                         </span>
                     </div>
 
-                    <!-- Seat Destination -->
                     @if ($activeSeat)
                         <div class="p-3 bg-dark-subtle border border-danger-subtle rounded-3 d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex align-items-center gap-2">
@@ -179,7 +175,6 @@
                         </div>
                     @endif
 
-                    <!-- Cart Items List Container -->
                     <div id="cartItemsList" class="overflow-y-auto mb-3" style="max-height: 240px;">
                         <div class="py-4 text-center text-secondary small" id="emptyCartNotice">
                             <i class="bi bi-cart-x fs-3 d-block mb-1 text-secondary"></i>
@@ -187,13 +182,11 @@
                         </div>
                     </div>
 
-                    <!-- Checkout Form -->
                     <form method="POST" action="{{ route('customer.place-order') }}" id="checkoutForm" class="d-flex flex-column gap-3">
                         @csrf
                         <input type="hidden" name="seat_id" value="{{ $activeSeat ? $activeSeat->id : '' }}">
                         <div id="formHiddenInputs"></div>
 
-                        <!-- Payment Method Selection -->
                         <div class="pt-3 border-top border-secondary-subtle">
                             <label class="form-label text-secondary small fw-bold text-uppercase">ช่องทางการชำระเงิน:</label>
 
@@ -226,7 +219,6 @@
                             </div>
                         </div>
 
-                        <!-- Total & Checkout Button -->
                         <div class="pt-3 border-top border-secondary-subtle">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-secondary small">ยอดรวมทั้งสิ้น:</span>
@@ -374,7 +366,7 @@
         }
     </script>
 
-    <!-- Modal จำลอง QR Code PromptPay สำหรับการชำระเงินค่าอาหาร -->
+    <!-- Modal สแกนพร้อมเพย์ -->
     <div class="modal fade" id="foodQrModal" tabindex="-1" aria-labelledby="foodQrModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark border border-danger-subtle rounded-4 p-4 text-center shadow-lg">
@@ -394,41 +386,8 @@
                     @endif
                 </div>
 
-                <!-- จำลอง QR Code Card PromptPay (สไตล์ทางการ) -->
-                <div class="bg-white rounded-4 mx-auto overflow-hidden shadow mb-3" style="width: 240px;">
-                    <!-- PromptPay Header Bar -->
-                    <div style="background-color: #003d6b; padding: 0.625rem 0.5rem; text-align: center;">
-                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; background-color: #ffffff; border-radius: 0.375rem; padding: 0.25rem 0.75rem;">
-                            <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #dc2626; display: inline-block;"></span>
-                            <span style="color: #003d6b; font-size: 11px; font-weight: 900; letter-spacing: 0.05em; font-family: sans-serif;">THAI QR PAYMENT</span>
-                        </div>
-                    </div>
-
-                    <!-- QR Body -->
-                    <div style="padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff;">
-                        <svg class="text-black" style="width: 160px; height: 160px;" viewBox="0 0 100 100" fill="currentColor">
-                            <rect x="0" y="0" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                            <rect x="8" y="8" width="14" height="14"/>
-                            <rect x="70" y="0" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                            <rect x="78" y="8" width="14" height="14"/>
-                            <rect x="0" y="70" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                            <rect x="8" y="78" width="14" height="14"/>
-                            <rect x="36" y="8" width="8" height="8"/>
-                            <rect x="48" y="16" width="12" height="6"/>
-                            <rect x="36" y="26" width="6" height="10"/>
-                            <rect x="46" y="38" width="8" height="8"/>
-                            <rect x="10" y="44" width="10" height="6"/>
-                            <rect x="24" y="40" width="8" height="16"/>
-                            <rect x="38" y="60" width="12" height="12"/>
-                            <rect x="60" y="40" width="10" height="8"/>
-                            <rect x="74" y="36" width="16" height="6"/>
-                            <rect x="84" y="48" width="10" height="14"/>
-                            <rect x="60" y="60" width="16" height="8"/>
-                            <rect x="80" y="74" width="14" height="14"/>
-                            <rect x="64" y="84" width="10" height="10"/>
-                            <rect x="40" y="82" width="14" height="6"/>
-                        </svg>
-                    </div>
+                <div class="bg-white rounded-4 mx-auto overflow-hidden shadow mb-3 p-2 text-center" style="max-width: 240px;">
+                    <img src="{{ asset('images/promptpay-qr.jpg') }}" alt="PromptPay QR Code" class="img-fluid rounded-3" style="max-height: 280px; width: auto; object-fit: contain;">
                 </div>
 
                 <div class="bg-dark-subtle p-2.5 rounded-3 border border-secondary-subtle small mb-3">

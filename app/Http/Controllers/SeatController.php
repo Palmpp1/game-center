@@ -100,19 +100,20 @@ class SeatController extends Controller
                 return redirect()->back()->with('error', 'แพ็กเกจนี้หมดอายุแล้ว');
             }
 
-            // ตรวจสอบโซนของแพ็กเกจว่าตรงกับโซนของที่นั่งหรือไม่
-            if ($userPackage->package && $userPackage->package->zone_id !== null && $userPackage->package->zone_id !== $seat->zone_id) {
-                $pkgZoneName = $userPackage->package->zone ? $userPackage->package->zone->name : 'โซนอื่น';
-                $seatZoneName = $seat->zone ? $seat->zone->name : 'โซนนี้';
-                return redirect()->back()->with('error', "แพ็กเกจนี้ใช้ได้เฉพาะกับโซน {$pkgZoneName} เท่านั้น ไม่สามารถนำมาใช้กับ {$seatZoneName} ได้");
+            // ตรวจสอบว่าแพ็กเกจนี้ใช้กับโซนของเครื่องนี้ได้หรือไม่
+            $package = $userPackage->package;
+            if ($package != null && $package->zone_id != null) {
+                if ($package->zone_id != $seat->zone_id) {
+                    return redirect()->back()->with('error', 'แพ็กเกจนี้ไม่สามารถใช้กับโซนนี้ได้');
+                }
             }
 
             $selectedPackageId = $userPackage->id;
         } else {
-            // เล่นแบบคิดตามจริง ต้องมีขั้นต่ำ 20 บาท
+            // เล่นแบบคิดตามจริง ต้องมียอดเงินในกระเป๋ามากกว่า 0 บาท
             $freshUser = User::find($user->id);
-            if ((float) $freshUser->balance < 20.00) {
-                return redirect()->back()->with('error', 'ยอดเงินในกระเป๋าต้องมีอย่างน้อย ฿20.00 จึงจะสามารถเปิดเครื่องได้ กรุณาเติมเงินก่อนใช้งาน');
+            if ((float) $freshUser->balance <= 0.00) {
+                return redirect()->back()->with('error', 'ยอดเงินในกระเป๋าของคุณหมดแล้ว กรุณาเติมเงินก่อนเปิดเครื่อง');
             }
         }
 

@@ -1,7 +1,6 @@
 <x-layouts::app :title="__('Kitchen Queue')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
-        @if (session()->has('success'))
+                @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 border-success-subtle bg-success-subtle text-success py-3 px-4 rounded-3 m-0">
                 <i class="bi bi-check-circle-fill fs-5"></i>
                 <div>{{ session('success') }}</div>
@@ -14,8 +13,7 @@
             </div>
         @endif
 
-        <!-- Header & Filter Tabs -->
-        <div class="card bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 shadow-sm">
+                <div class="card bg-dark border-secondary-subtle rounded-4 p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 shadow-sm">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
                     <span class="spinner-grow spinner-grow-sm text-warning" style="width: 10px; height: 10px;"></span>
@@ -24,8 +22,7 @@
                 <small class="text-secondary ps-3">มอนิเตอร์และจัดการสถานะอาหารที่ลูกค้าสั่งจากเครื่องคอมพิวเตอร์</small>
             </div>
 
-            <!-- Filter Buttons -->
-            <div class="d-flex flex-wrap gap-2">
+                        <div class="d-flex flex-wrap gap-2">
                 <a
                     href="{{ route('staff.kitchen-queue', ['status' => 'active']) }}"
                     class="btn btn-sm rounded-pill px-3 fw-semibold {{ $filterStatus === 'active' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light' }}"
@@ -47,14 +44,13 @@
             </div>
         </div>
 
-        <!-- Orders Grid -->
+        <!-- คิวออเดอร์อาหาร -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             @forelse ($orders as $order)
                 <div class="col">
                     <div class="card h-100 bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm d-flex flex-column justify-content-between">
                         <div>
-                            <!-- Order Top Banner -->
-                            <div class="d-flex justify-content-between align-items-start border-bottom border-secondary-subtle pb-3 mb-3">
+                                                        <div class="d-flex justify-content-between align-items-start border-bottom border-secondary-subtle pb-3 mb-3">
                                 <div>
                                     <small class="text-secondary fw-bold" style="font-size: 11px;">ออเดอร์ #{{ $order->id }}</small>
                                     <h3 class="h4 fw-black text-white m-0">
@@ -96,8 +92,7 @@
                                 </div>
                             </div>
 
-                            <!-- Items List -->
-                            <div class="d-flex flex-column gap-2 mb-3">
+                                                        <div class="d-flex flex-column gap-2 mb-3">
                                 @foreach ($order->items as $item)
                                     <div class="d-flex justify-content-between align-items-center small">
                                         <span class="text-light">
@@ -111,37 +106,46 @@
                             </div>
                         </div>
 
-                        <!-- Footer & Action Buttons -->
-                        <div class="pt-3 border-top border-secondary-subtle">
+                                                <div class="pt-3 border-top border-secondary-subtle">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-secondary small">ยอดรวม:</span>
                                 <span class="fs-5 fw-bold text-white font-monospace">฿{{ number_format($order->total_amount, 2) }}</span>
                             </div>
 
-                            <!-- Cash Confirmation if pending -->
                             @if ($order->payment_method === 'cash' && $order->payment_status === 'pending_payment')
+                                <div class="alert alert-warning py-1.5 px-3 rounded-3 d-flex align-items-center gap-2 mb-2 small text-warning-emphasis bg-warning-subtle border border-warning-subtle" style="font-size: 11.5px;">
+                                    <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                    <span>ต้องกดยืนยันรับเงินสดก่อน จึงจะเริ่มทำอาหารได้</span>
+                                </div>
                                 <form method="POST" action="{{ route('staff.confirm-cash') }}" class="mb-2">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold rounded-pill text-dark">
+                                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold rounded-pill text-dark shadow-sm">
                                         <i class="bi bi-cash-stack me-1"></i> ยืนยันรับเงินสดแล้ว (฿{{ number_format($order->total_amount, 2) }})
                                     </button>
                                 </form>
                             @endif
 
-                            <!-- Status Workflow Buttons -->
                             <div class="row g-2">
                                 @if ($order->order_status === 'pending')
-                                    <div class="col-7">
-                                        <form method="POST" action="{{ route('staff.update-order-status') }}">
-                                            @csrf
-                                            <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                            <input type="hidden" name="status" value="preparing">
-                                            <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold rounded-pill py-2">
-                                                <i class="bi bi-fire me-1"></i> เริ่มทำอาหาร &rarr;
+                                    @if ($order->payment_status !== 'paid')
+                                        <div class="col-7">
+                                            <button type="button" class="btn btn-secondary btn-sm w-100 fw-semibold rounded-pill py-2 opacity-50" disabled title="ต้องกดยืนยันรับเงินสดก่อนเริ่มทำอาหาร">
+                                                <i class="bi bi-lock-fill me-1"></i> รอยืนยันรับเงิน
                                             </button>
-                                        </form>
-                                    </div>
+                                        </div>
+                                    @else
+                                        <div class="col-7">
+                                            <form method="POST" action="{{ route('staff.update-order-status') }}">
+                                                @csrf
+                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                <input type="hidden" name="status" value="preparing">
+                                                <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold rounded-pill py-2">
+                                                    <i class="bi bi-fire me-1"></i> เริ่มทำอาหาร &rarr;
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
 
                                     <div class="col-5">
                                         <form method="POST" action="{{ route('staff.update-order-status') }}" onsubmit="return confirm('คุณต้องการยกเลิกออเดอร์นี้หรือไม่?');">
@@ -154,16 +158,24 @@
                                         </form>
                                     </div>
                                 @elseif ($order->order_status === 'preparing')
-                                    <div class="col-12">
-                                        <form method="POST" action="{{ route('staff.update-order-status') }}">
-                                            @csrf
-                                            <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                            <input type="hidden" name="status" value="served">
-                                            <button type="submit" class="btn btn-outline-success btn-sm w-100 fw-bold rounded-pill py-2">
-                                                <i class="bi bi-send-check me-1"></i> ทำเสร็จแล้ว &bull; กดเพื่อเสิร์ฟ
+                                    @if ($order->payment_status !== 'paid')
+                                        <div class="col-12">
+                                            <button type="button" class="btn btn-secondary btn-sm w-100 fw-semibold rounded-pill py-2 opacity-50" disabled title="ต้องกดยืนยันรับเงินสดก่อนเสิร์ฟ">
+                                                <i class="bi bi-lock-fill me-1"></i> รอยืนยันรับเงินสดก่อนเสิร์ฟ
                                             </button>
-                                        </form>
-                                    </div>
+                                        </div>
+                                    @else
+                                        <div class="col-12">
+                                            <form method="POST" action="{{ route('staff.update-order-status') }}">
+                                                @csrf
+                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                <input type="hidden" name="status" value="served">
+                                                <button type="submit" class="btn btn-outline-success btn-sm w-100 fw-bold rounded-pill py-2">
+                                                    <i class="bi bi-send-check me-1"></i> ทำเสร็จแล้ว &bull; กดเพื่อเสิร์ฟ
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 @elseif ($order->order_status === 'served')
                                     <div class="col-12">
                                         <div class="badge bg-success-subtle text-success border border-success-subtle w-100 py-2 rounded-pill small fw-semibold">

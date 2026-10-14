@@ -142,6 +142,14 @@ class StaffController extends Controller
             return redirect()->back()->with('error', 'ไม่พบข้อมูลออเดอร์');
         }
 
+        // ตรวจสอบ: หากยังไม่ได้รับการชำระเงิน ไม่อนุญาตให้เริ่มทำอาหารหรือเสิร์ฟอาหาร
+        if (in_array($status, ['preparing', 'served']) && $order->payment_status !== 'paid') {
+            $msg = $order->payment_method === 'cash'
+                ? 'ไม่สามารถเปลี่ยนสถานะอาหารได้ เนื่องจากยังไม่ได้ยืนยันการรับเงินสดสำหรับออเดอร์ #' . $order->id . ' กรุณากดยืนยันรับเงินสดก่อน'
+                : 'ไม่สามารถเปลี่ยนสถานะอาหารได้ เนื่องจากออเดอร์ #' . $order->id . ' ยังไม่ได้รับการชำระเงิน';
+            return redirect()->back()->with('error', $msg);
+        }
+
         // ถ้ากดยกเลิกออเดอร์ ให้คืนสต็อกสินค้า
         if ($status == 'cancelled' && $order->order_status != 'cancelled') {
             foreach ($order->items as $item) {

@@ -1,7 +1,6 @@
 <x-layouts::app :title="__('Wallet & Packages')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
-        @if (session()->has('success'))
+                @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 border-success-subtle bg-success-subtle text-success py-3 px-4 rounded-3 m-0 shadow-sm">
                 <i class="bi bi-check-circle-fill fs-5"></i>
                 <div>{{ session('success') }}</div>
@@ -14,8 +13,7 @@
             </div>
         @endif
 
-        <!-- Explanation Card: กระเป๋าเงิน (Wallet) vs แพ็กเกจชั่วโมง (Packages) -->
-        <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
+                <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="bg-danger rounded" style="width: 4px; height: 22px;"></span>
                 <h2 class="h5 fw-bold text-white m-0">ความแตกต่างระหว่าง "กระเป๋าเงิน (Wallet)" กับ "แพ็กเกจชั่วโมง"</h2>
@@ -49,7 +47,7 @@
         </div>
 
         <div class="row g-4">
-            <!-- Section 1: Wallet Top-up -->
+            <!-- ฟอร์มเติมเงิน -->
             <div class="col-12 col-xl-5">
                 <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm h-100">
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle pb-3 mb-4">
@@ -69,8 +67,7 @@
                     <form id="topupForm" method="POST" action="{{ route('customer.do-topup') }}" class="d-flex flex-column gap-3">
                         @csrf
 
-                        <!-- Amount presets -->
-                        <div>
+                                                <div>
                             <label class="form-label text-secondary text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.05em;">
                                 เลือกจำนวนเงิน:
                             </label>
@@ -95,8 +92,7 @@
                             </div>
                         </div>
 
-                        <!-- Custom amount input -->
-                        <div>
+                                                <div>
                             <label for="inputAmount" class="form-label text-secondary small fw-semibold">หรือระบุจำนวนเงินเอง (บาท):</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark-subtle border-secondary-subtle text-secondary font-monospace">฿</span>
@@ -116,8 +112,7 @@
                             <small class="text-secondary mt-1 d-block">ขั้นต่ำ ฿20.00 สูงสุด ฿10,000.00</small>
                         </div>
 
-                        <!-- Payment Method -->
-                        <div>
+                                                <div>
                             <label class="form-label text-secondary small fw-semibold">ช่องทางการชำระเงิน:</label>
                             <div class="row g-2">
                                 <div class="col-6">
@@ -158,7 +153,7 @@
                 </div>
             </div>
 
-            <!-- Section 2: Buy Zone-Specific Time Packages -->
+            <!-- ซื้อแพ็กเกจชั่วโมงตามโซน -->
             <div class="col-12 col-xl-7">
                 <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between">
                     <div>
@@ -172,8 +167,7 @@
                             </div>
                         </div>
 
-                        <!-- Zone Tabs for Packages -->
-                        <ul class="nav nav-pills mb-3 gap-2" id="packageZoneTabs" role="tablist">
+                                                <ul class="nav nav-pills mb-3 gap-2" id="packageZoneTabs" role="tablist">
                             @foreach ($zones as $idx => $z)
                                 <li class="nav-item" role="presentation">
                                     <button
@@ -193,8 +187,7 @@
                             @endforeach
                         </ul>
 
-                        <!-- Zone Tab Contents -->
-                        <div class="tab-content mb-4" id="packageZoneTabContent">
+                                                <div class="tab-content mb-4" id="packageZoneTabContent">
                             @foreach ($zones as $idx => $z)
                                 <div
                                     class="tab-pane fade {{ $idx === 0 ? 'show active' : '' }}"
@@ -280,8 +273,7 @@
                         </div>
                     </div>
 
-                    <!-- User Active Packages list with Days/Hours/Minutes -->
-                    @if ($userPackages->isNotEmpty())
+                                        @if ($userPackages->isNotEmpty())
                         <div class="pt-3 border-top border-secondary-subtle">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-secondary text-uppercase fw-bold small">
@@ -328,7 +320,7 @@
             </div>
         </div>
 
-        <!-- Section 3: Wallet Transactions History -->
+        <!-- ประวัติการทำรายการกระเป๋าเงิน -->
         @if ($transactions->isNotEmpty())
             <div class="card bg-dark border-secondary-subtle rounded-4 p-4 shadow-sm">
                 <div class="d-flex align-items-center gap-2 mb-3">
@@ -397,7 +389,7 @@
             </div>
         @endif
 
-        <!-- Bootstrap Modal จำลองการสแกน QR Code PromptPay -->
+        <!-- Modal สแกนพร้อมเพย์ -->
         <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
                 <div class="modal-content bg-dark border border-danger-subtle rounded-4 p-4 text-center shadow-lg">
@@ -414,41 +406,8 @@
                         <div class="fs-3 fw-black text-warning font-monospace" id="modalQrAmount">฿100.00</div>
                     </div>
 
-                    <!-- จำลอง QR Code Card PromptPay (สไตล์ทางการ) -->
-                    <div class="bg-white rounded-4 mx-auto overflow-hidden shadow mb-3" style="width: 240px;">
-                        <!-- PromptPay Header Bar -->
-                        <div style="background-color: #003d6b; padding: 0.625rem 0.5rem; text-align: center;">
-                            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; background-color: #ffffff; border-radius: 0.375rem; padding: 0.25rem 0.75rem;">
-                                <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #dc2626; display: inline-block;"></span>
-                                <span style="color: #003d6b; font-size: 11px; font-weight: 900; letter-spacing: 0.05em; font-family: sans-serif;">THAI QR PAYMENT</span>
-                            </div>
-                        </div>
-
-                        <!-- QR Body -->
-                        <div style="padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff;">
-                            <svg class="text-black" style="width: 160px; height: 160px;" viewBox="0 0 100 100" fill="currentColor">
-                                <rect x="0" y="0" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                                <rect x="8" y="8" width="14" height="14"/>
-                                <rect x="70" y="0" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                                <rect x="78" y="8" width="14" height="14"/>
-                                <rect x="0" y="70" width="30" height="30" fill="none" stroke="currentColor" stroke-width="6"/>
-                                <rect x="8" y="78" width="14" height="14"/>
-                                <rect x="36" y="8" width="8" height="8"/>
-                                <rect x="48" y="16" width="12" height="6"/>
-                                <rect x="36" y="26" width="6" height="10"/>
-                                <rect x="46" y="38" width="8" height="8"/>
-                                <rect x="10" y="44" width="10" height="6"/>
-                                <rect x="24" y="40" width="8" height="16"/>
-                                <rect x="38" y="60" width="12" height="12"/>
-                                <rect x="60" y="40" width="10" height="8"/>
-                                <rect x="74" y="36" width="16" height="6"/>
-                                <rect x="84" y="48" width="10" height="14"/>
-                                <rect x="60" y="60" width="16" height="8"/>
-                                <rect x="80" y="74" width="14" height="14"/>
-                                <rect x="64" y="84" width="10" height="10"/>
-                                <rect x="40" y="82" width="14" height="6"/>
-                            </svg>
-                        </div>
+                    <div class="bg-white rounded-4 mx-auto overflow-hidden shadow mb-3 p-2 text-center" style="max-width: 240px;">
+                        <img src="{{ asset('images/promptpay-qr.jpg') }}" alt="PromptPay QR Code" class="img-fluid rounded-3" style="max-height: 280px; width: auto; object-fit: contain;">
                     </div>
 
                     <div class="bg-dark-subtle p-2.5 rounded-3 border border-secondary-subtle small mb-3">

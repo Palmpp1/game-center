@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Architecture &amp; Technical Guide - LETSPLAY GAMING</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;600;700&display=swap');
+        @page { size: A4; margin: 14mm 12mm; }
+        * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        body { font-family: 'Sarabun','Segoe UI',Tahoma,sans-serif; font-size: 13px; line-height: 1.6; color: #1e2128; background: #fff; margin: 0; padding: 0; }
+        h1,h2,h3,h4 { font-family: 'Prompt','Sarabun',sans-serif; color: #111827; margin-top: 0; }
+        .cover { min-height: 260px; background: linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#1a1f2e 100%); border-radius: 8px; padding: 36px 30px 28px; margin-bottom: 24px; color: #fff; position: relative; overflow: hidden; }
+        .cover-badge { display:inline-block; background:#dc2626; color:#fff; font-size:10px; font-weight:700; letter-spacing:1.5px; padding:3px 10px; border-radius:20px; margin-bottom:14px; text-transform:uppercase; }
+        .cover h1 { color:#fff; font-size:26px; margin-bottom:6px; line-height:1.25; }
+        .cover-sub { color:#94a3b8; font-size:13px; margin-bottom:18px; }
+        .cover-meta { display:flex; gap:24px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; margin-top:8px; }
+        .cover-meta-item .label { color:#64748b; font-size:10px; letter-spacing:1px; text-transform:uppercase; display:block; }
+        .cover-meta-item .value { color:#e2e8f0; font-size:12px; font-weight:600; margin-top:2px; display:block; }
+        .section-header { display:flex; align-items:center; gap:10px; margin:22px 0 12px; padding-bottom:8px; border-bottom:2px solid #ef4444; }
+        .section-number { background:#dc2626; color:#fff; font-family:'Prompt',sans-serif; font-size:11px; font-weight:700; width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .section-header h2 { font-size:15px; margin:0; color:#111827; }
+        .group-label { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:#64748b; margin:16px 0 8px; }
+        .table-card { border:1px solid #e2e8f0; border-radius:8px; margin-bottom:14px; overflow:hidden; break-inside:avoid; }
+        .table-card-header { background:#f8fafc; padding:9px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #e2e8f0; }
+        .table-name { font-family:'Courier New',monospace; font-size:13px; font-weight:700; color:#0f172a; background:#e0f2fe; padding:2px 8px; border-radius:4px; }
+        .table-desc { color:#475569; font-size:12px; }
+        table.cols { width:100%; border-collapse:collapse; font-size:12px; }
+        table.cols thead tr { background:#f1f5f9; }
+        table.cols th { padding:6px 10px; text-align:left; font-weight:600; color:#374151; font-size:11px; letter-spacing:.4px; border-bottom:1px solid #e2e8f0; }
+        table.cols td { padding:6px 10px; border-bottom:1px solid #f1f5f9; vertical-align:top; line-height:1.45; }
+        table.cols tr:last-child td { border-bottom:none; }
+        .col-name { font-family:'Courier New',monospace; font-size:11px; color:#1d4ed8; font-weight:600; white-space:nowrap; }
+        .col-type { color:#7c3aed; font-family:'Courier New',monospace; font-size:11px; white-space:nowrap; }
+        .badge { display:inline-block; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:600; white-space:nowrap; }
+        .badge-pk { background:#fef3c7; color:#92400e; }
+        .badge-fk { background:#e0e7ff; color:#3730a3; }
+        .badge-null { background:#f0fdf4; color:#166534; }
+        .badge-uni { background:#fce7f3; color:#9d174d; }
+        .rel-box { padding:8px 14px; background:#fafafa; border-top:1px solid #f1f5f9; font-size:11.5px; color:#475569; }
+        .rel-box strong { color:#111827; }
+        .rel-item { margin-bottom:3px; }
+        .rel-item::before { content:'→ '; color:#dc2626; font-weight:700; }
+        .erd-container { background:#0f172a; border-radius:8px; padding:20px; margin:12px 0; }
+        .erd-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+        .erd-table { background:#1e293b; border:1px solid #334155; border-radius:6px; overflow:hidden; }
+        .erd-table-name { background:#dc2626; color:#fff; font-family:'Courier New',monospace; font-weight:700; padding:5px 8px; font-size:11px; }
+        .erd-field { padding:3px 8px; color:#94a3b8; border-bottom:1px solid #0f172a; font-family:'Courier New',monospace; font-size:10px; }
+        .erd-field.pk { color:#fbbf24; font-weight:700; }
+        .erd-field.fk { color:#60a5fa; }
+        .erd-legend { display:flex; gap:16px; margin-top:12px; flex-wrap:wrap; }
+        .erd-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:#94a3b8; }
+        .erd-legend-dot { width:10px; height:10px; border-radius:2px; }
+        .workflow-flow { display:flex; align-items:flex-start; gap:0; flex-wrap:nowrap; padding:4px 0 8px; }
+        .flow-step { flex:1; min-width:110px; text-align:center; position:relative; }
+        .flow-step:not(:last-child)::after { content:'→'; position:absolute; right:-10px; top:18px; color:#dc2626; font-size:16px; font-weight:700; }
+        .flow-icon { width:40px; height:40px; background:#fee2e2; border:2px solid #dc2626; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:18px; }
+        .flow-title { font-size:11px; font-weight:700; color:#111827; margin-bottom:3px; }
+        .flow-tables { font-size:10px; color:#64748b; font-family:'Courier New',monospace; line-height:1.4; }
+        .workflow-block { background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #dc2626; border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:12px; break-inside:avoid; }
+        .workflow-block h4 { font-size:13px; color:#111827; margin-bottom:8px; }
+        .workflow-steps { counter-reset:step; padding:0; margin:0; list-style:none; }
+        .workflow-steps li { counter-increment:step; display:flex; align-items:flex-start; gap:10px; margin-bottom:7px; font-size:12px; color:#374151; }
+        .workflow-steps li::before { content:counter(step); background:#dc2626; color:#fff; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; margin-top:1px; }
+        .workflow-steps li code { background:#e0f2fe; color:#0369a1; font-family:'Courier New',monospace; font-size:10.5px; padding:1px 5px; border-radius:3px; }
+        .status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:6px; }
+        .status-card { border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; }
+        .status-card-title { background:#1e293b; color:#e2e8f0; font-size:11px; font-weight:700; padding:5px 10px; font-family:'Courier New',monospace; }
+        .status-list { padding:8px 10px; }
+        .status-item { display:flex; align-items:center; gap:8px; margin-bottom:5px; font-size:11.5px; }
+        .status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+        .rationale-card { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:0 8px 8px 0; padding:12px 16px; margin-bottom:12px; break-inside:avoid; }
+        .rationale-card h4 { font-size:13px; color:#92400e; margin-bottom:6px; }
+        .rationale-card p,.rationale-card li { font-size:12px; color:#44403c; margin:0 0 4px; line-height:1.55; }
+        .rationale-card ul { padding-left:18px; margin:4px 0; }
+        .spec-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+        .spec-card { background:#f8fafc; border:1px solid #e2e8f0; border-top:3px solid #dc2626; border-radius:6px; padding:12px; text-align:center; }
+        .spec-card .spec-icon { font-size:22px; margin-bottom:6px; }
+        .spec-card .spec-label { font-size:10px; color:#64748b; letter-spacing:.8px; text-transform:uppercase; }
+        .spec-card .spec-value { font-size:12px; font-weight:700; color:#111827; margin-top:3px; }
+        .info-box { background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:10px 14px; font-size:12px; color:#1e40af; margin-bottom:12px; }
+        .fk-table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:14px; }
+        .fk-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; font-size:11px; }
+        .fk-table td { padding:6px 10px; border-bottom:1px solid #e2e8f0; font-size:11.5px; }
+        .fk-table tr:nth-child(even) td { background:#f8fafc; }
+        .restrict { color:#dc2626; font-weight:600; }
+        .cascade { color:#16a34a; font-weight:600; }
+        .page-break { page-break-before:always; break-before:page; margin-top:0; }
+        hr.divider { border:none; border-top:1px solid #e2e8f0; margin:16px 0; }
+        .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    </style>
+</head>
+<body>
+
+<div class="cover">
+    <div class="cover-badge">🎮 Game Cafe System — Technical Documentation</div>
+    <h1>คู่มือฐานข้อมูลและสถาปัตยกรรมระบบ<br>Database Schema &amp; Architecture Guide</h1>
+    <div class="cover-sub">เอกสารประกอบการนำเสนอฐานข้อมูล สำหรับอาจารย์ผู้ดูแล</div>
+    <div class="cover-meta">
+        <div class="cover-meta-item"><span class="label">ชื่อโปรเจกต์</span><span class="value">LETSPLAY GAMING — ระบบบริหารร้านเกมคาเฟ่</span></div>
+        <div class="cover-meta-item"><span class="label">เทคโนโลยี</span><span class="value">PHP 8.4 · Laravel 12 · SQLite</span></div>
+        <div class="cover-meta-item"><span class="label">จำนวนตารางหลัก</span><span class="value">11 Tables</span></div>
+        <div class="cover-meta-item"><span class="label">ฐานข้อมูล</span><span class="value">database/database.sqlite</span></div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="section-header"><div class="section-number">1</div><h2>ภาพรวมระบบ (System Overview)</h2></div>
+<div class="spec-grid">
+    <div class="spec-card"><div class="spec-icon">👥</div><div class="spec-label">ผู้ใช้และกระเป๋าเงิน</div><div class="spec-value">users · wallet_transactions</div></div>
+    <div class="spec-card"><div class="spec-icon">🖥️</div><div class="spec-label">โซน เครื่อง และเซสชัน</div><div class="spec-value">zones · seats · seat_sessions</div></div>
+    <div class="spec-card"><div class="spec-icon">⏱️</div><div class="spec-label">แพ็กเกจชั่วโมง</div><div class="spec-value">packages · user_packages</div></div>
+    <div class="spec-card"><div class="spec-icon">🍜</div><div class="spec-label">อาหารและออเดอร์</div><div class="spec-value">categories · products · orders · order_items</div></div>
+    <div class="spec-card"><div class="spec-icon">👤</div><div class="spec-label">บทบาทผู้ใช้</div><div class="spec-value">Admin · Staff · Customer</div></div>
+    <div class="spec-card"><div class="spec-icon">💰</div><div class="spec-label">ช่องทางชำระเงิน</div><div class="spec-value">Wallet · PromptPay · Cash</div></div>
+</div>
+<div class="info-box"><strong>สรุปสั้น:</strong> ระบบ Web Application บริหารร้านเกมคาเฟ่ครบวงจร ตั้งแต่จัดการสมาชิก, กระเป๋าเงินดิจิทัล, ตรวจสอบที่นั่ง (Seat Map), แพ็กเกจชั่วโมงล่วงหน้า และสั่งอาหารจากหน้าจอเครื่อง โดยใช้ SQLite เป็น Database</div>
+
+<!-- SECTION 2 — ERD -->
+<div class="section-header"><div class="section-number">2</div><h2>ผังความสัมพันธ์ตาราง (Entity Relationship Diagram)</h2></div>
+<div class="erd-container">
+    <div class="erd-grid">
+        <div class="erd-table"><div class="erd-table-name">users</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field">name</div><div class="erd-field">username (UQ)</div><div class="erd-field">email (UQ)</div><div class="erd-field">role</div><div class="erd-field">balance</div><div class="erd-field">password</div></div>
+        <div class="erd-table"><div class="erd-table-name">wallet_transactions</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 user_id (FK)</div><div class="erd-field">type</div><div class="erd-field">amount</div><div class="erd-field">ref_type</div><div class="erd-field">ref_id</div></div>
+        <div class="erd-table"><div class="erd-table-name">zones</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field">name</div><div class="erd-field">hourly_rate</div><div class="erd-field">description</div></div>
+        <div class="erd-table"><div class="erd-table-name">packages</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 zone_id (FK)</div><div class="erd-field">name</div><div class="erd-field">duration_hours</div><div class="erd-field">price</div></div>
+        <div class="erd-table"><div class="erd-table-name">seats</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 zone_id (FK)</div><div class="erd-field">seat_number (UQ)</div><div class="erd-field">status</div></div>
+        <div class="erd-table"><div class="erd-table-name">user_packages</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 user_id (FK)</div><div class="erd-field fk">🔗 package_id (FK)</div><div class="erd-field">remaining_minutes</div><div class="erd-field">purchased_at</div><div class="erd-field">expired_at</div></div>
+        <div class="erd-table"><div class="erd-table-name">seat_sessions</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 user_id (FK)</div><div class="erd-field fk">🔗 seat_id (FK)</div><div class="erd-field fk">🔗 user_package_id (FK?)</div><div class="erd-field">rate_snapshot ⚡</div><div class="erd-field">start_time / end_time</div><div class="erd-field">total_cost / status</div></div>
+        <div class="erd-table"><div class="erd-table-name">orders</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 user_id (FK)</div><div class="erd-field fk">🔗 seat_id (FK)</div><div class="erd-field fk">🔗 session_id (FK?)</div><div class="erd-field">total_amount</div><div class="erd-field">payment_method</div><div class="erd-field">payment_status / order_status</div></div>
+        <div class="erd-table"><div class="erd-table-name">categories</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field">name</div></div>
+        <div class="erd-table"><div class="erd-table-name">products</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 category_id (FK)</div><div class="erd-field">name / price</div><div class="erd-field">stock_quantity</div><div class="erd-field">image</div></div>
+        <div class="erd-table"><div class="erd-table-name">order_items</div><div class="erd-field pk">🔑 id (PK)</div><div class="erd-field fk">🔗 order_id (FK CASCADE)</div><div class="erd-field fk">🔗 product_id (FK)</div><div class="erd-field">quantity</div><div class="erd-field">unit_price ⚡</div><div class="erd-field">subtotal</div></div>
+    </div>
+    <div class="erd-legend">
+        <div class="erd-legend-item"><div class="erd-legend-dot" style="background:#fbbf24;"></div> PK — Primary Key</div>
+        <div class="erd-legend-item"><div class="erd-legend-dot" style="background:#60a5fa;"></div> FK — Foreign Key</div>
+        <div class="erd-legend-item"><div class="erd-legend-dot" style="background:#a78bfa;"></div> UQ — Unique</div>
+        <div class="erd-legend-item"><div class="erd-legend-dot" style="background:#6ee7b7;"></div> ? — nullable FK</div>
+        <div class="erd-legend-item"><div class="erd-legend-dot" style="background:#fbbf24;opacity:.5;"></div> ⚡ Snapshot — ล็อกราคา ณ เวลาทำรายการ</div>
+    </div>
+</div>
+<p style="font-size:11px;color:#6b7280;text-align:center;margin-top:6px;">ความสัมพันธ์หลัก: <strong>users</strong> → seat_sessions → orders → order_items &nbsp;|&nbsp; zones → seats → seat_sessions &nbsp;|&nbsp; packages → user_packages → seat_sessions</p>
+
+<!-- SECTION 3 — TABLE SCHEMA -->
+<div class="page-break"></div>
+<div class="section-header"><div class="section-number">3</div><h2>รายละเอียดโครงสร้างตาราง (Table Schema)</h2></div>
+
+<div class="group-label">กลุ่มที่ 1 — ผู้ใช้งานและกระเป๋าเงิน</div>
+<div class="table-card">
+    <div class="table-card-header"><span class="table-name">users</span><span class="table-desc">บัญชีผู้ใช้งานทั้งหมด (Customer, Staff, Admin)</span></div>
+    <table class="cols">
+        <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">bigint</td><td><span class="badge badge-pk">PK</span></td><td>รหัสผู้ใช้งาน (Auto Increment)</td></tr>
+            <tr><td class="col-name">name</td><td class="col-type">varchar(255)</td><td></td><td>ชื่อ-นามสกุล</td></tr>
+            <tr><td class="col-name">username</td><td class="col-type">varchar(50)</td><td><span class="badge badge-uni">UQ</span></td><td>ชื่อบัญชีล็อกอิน (ห้ามซ้ำ)</td></tr>
+            <tr><td class="col-name">email</td><td class="col-type">varchar(255)</td><td><span class="badge badge-null">nullable</span> <span class="badge badge-uni">UQ</span></td><td>อีเมล (ไม่บังคับ)</td></tr>
+            <tr><td class="col-name">phone</td><td class="col-type">varchar(20)</td><td><span class="badge badge-null">nullable</span></td><td>เบอร์โทรศัพท์</td></tr>
+            <tr><td class="col-name">role</td><td class="col-type">varchar(20)</td><td>default: customer</td><td><code>customer</code> / <code>staff</code> / <code>admin</code></td></tr>
+            <tr><td class="col-name">balance</td><td class="col-type">decimal(10,2)</td><td>default: 0.00</td><td>ยอดเงินในกระเป๋าดิจิทัล (บาท)</td></tr>
+            <tr><td class="col-name">password</td><td class="col-type">varchar(255)</td><td></td><td>รหัสผ่าน Bcrypt Hash</td></tr>
+        </tbody>
+    </table>
+    <div class="rel-box"><strong>Relationships:</strong><div class="rel-item">hasMany wallet_transactions / user_packages / seat_sessions / orders</div></div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header"><span class="table-name">wallet_transactions</span><span class="table-desc">Audit Log บันทึกทุกการเปลี่ยนแปลงยอดเงิน</span></div>
+    <table class="cols">
+        <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">bigint</td><td><span class="badge badge-pk">PK</span></td><td>รหัสธุรกรรม</td></tr>
+            <tr><td class="col-name">user_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→users</span></td><td>เจ้าของบัญชี</td></tr>
+            <tr><td class="col-name">type</td><td class="col-type">varchar(20)</td><td></td><td><code>topup</code> เติมเงิน · <code>deduct</code> หักเงิน · <code>refund</code> คืนเงิน</td></tr>
+            <tr><td class="col-name">amount</td><td class="col-type">decimal(10,2)</td><td></td><td>จำนวนเงิน (บาท)</td></tr>
+            <tr><td class="col-name">ref_type</td><td class="col-type">varchar(50)</td><td><span class="badge badge-null">nullable</span></td><td><code>session</code> / <code>order</code> / <code>cash_topup</code> / <code>qr_topup</code> / <code>package_purchase</code></td></tr>
+            <tr><td class="col-name">ref_id</td><td class="col-type">bigint</td><td><span class="badge badge-null">nullable</span></td><td>ไอดีอ้างอิงจากตารางต้นทาง</td></tr>
+        </tbody>
+    </table>
+    <div class="rel-box"><div class="rel-item">belongsTo users</div></div>
+</div>
+
+<div class="group-label">กลุ่มที่ 2 — โซน เครื่องคอมพิวเตอร์ และเซสชัน</div>
+<div class="two-col">
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">zones</span><span class="table-desc">โซนเครื่องในร้าน</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">name</td><td class="col-type">varchar(100)</td><td>ชื่อโซน</td></tr>
+                <tr><td class="col-name">hourly_rate</td><td class="col-type">decimal(10,2)</td><td>ราคา/ชั่วโมง</td></tr>
+                <tr><td class="col-name">description</td><td class="col-type">text</td><td>รายละเอียดสเปก (nullable)</td></tr>
+            </tbody>
+        </table>
+        <div class="rel-box"><div class="rel-item">hasMany seats / packages</div></div>
+    </div>
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">seats</span><span class="table-desc">เครื่องคอมพิวเตอร์แต่ละเครื่อง</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">zone_id</td><td class="col-type">bigint</td><td>FK→zones</td></tr>
+                <tr><td class="col-name">seat_number</td><td class="col-type">varchar(20)</td><td>UQ (STD-01, VIP-02)</td></tr>
+                <tr><td class="col-name">status</td><td class="col-type">varchar(20)</td><td>available / occupied / maintenance</td></tr>
+            </tbody>
+        </table>
+        <div class="rel-box"><div class="rel-item">belongsTo zones · hasMany seat_sessions / orders</div></div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header"><span class="table-name">seat_sessions</span><span class="table-desc">รอบการใช้งานเครื่อง Check-in ถึง Check-out</span></div>
+    <table class="cols">
+        <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">bigint</td><td><span class="badge badge-pk">PK</span></td><td>รหัสเซสชัน</td></tr>
+            <tr><td class="col-name">user_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→users</span></td><td>ลูกค้าที่ใช้งาน</td></tr>
+            <tr><td class="col-name">seat_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→seats</span></td><td>เครื่องที่ใช้งาน</td></tr>
+            <tr><td class="col-name">user_package_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→user_packages</span> <span class="badge badge-null">nullable</span></td><td>แพ็กเกจที่ใช้ (null = Pay As You Go)</td></tr>
+            <tr><td class="col-name">rate_snapshot ⚡</td><td class="col-type">decimal(10,2)</td><td></td><td>ราคา/ชั่วโมง ล็อกไว้ ณ ตอนเปิดเครื่อง</td></tr>
+            <tr><td class="col-name">start_time</td><td class="col-type">timestamp</td><td></td><td>เวลาเริ่มใช้</td></tr>
+            <tr><td class="col-name">end_time</td><td class="col-type">timestamp</td><td><span class="badge badge-null">nullable</span></td><td>เวลาสิ้นสุด (null = กำลังใช้อยู่)</td></tr>
+            <tr><td class="col-name">total_cost</td><td class="col-type">decimal(10,2)</td><td>default: 0.00</td><td>ค่าที่หักจริง (0 ถ้าใช้แพ็กเกจ)</td></tr>
+            <tr><td class="col-name">status</td><td class="col-type">varchar(20)</td><td>default: active</td><td><code>active</code> กำลังเล่น · <code>completed</code> จบแล้ว</td></tr>
+        </tbody>
+    </table>
+    <div class="rel-box"><div class="rel-item">belongsTo users / seats / user_packages · hasMany orders</div></div>
+</div>
+
+<div class="group-label">กลุ่มที่ 3 — แพ็กเกจชั่วโมง</div>
+<div class="two-col">
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">packages</span><span class="table-desc">แพ็กเกจที่ร้านเปิดขาย</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">zone_id</td><td class="col-type">bigint</td><td>FK→zones (nullable = ทุกโซน)</td></tr>
+                <tr><td class="col-name">name</td><td class="col-type">varchar(100)</td><td>ชื่อแพ็กเกจ</td></tr>
+                <tr><td class="col-name">duration_hours</td><td class="col-type">integer</td><td>จำนวนชั่วโมง</td></tr>
+                <tr><td class="col-name">price</td><td class="col-type">decimal(10,2)</td><td>ราคาขาย (บาท)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">user_packages</span><span class="table-desc">แพ็กเกจที่ลูกค้าซื้อไว้ (Rich Pivot)</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">user_id</td><td class="col-type">bigint</td><td>FK→users</td></tr>
+                <tr><td class="col-name">package_id</td><td class="col-type">bigint</td><td>FK→packages</td></tr>
+                <tr><td class="col-name">remaining_minutes</td><td class="col-type">integer</td><td>นาทีที่เหลือ</td></tr>
+                <tr><td class="col-name">purchased_at</td><td class="col-type">timestamp</td><td>วันที่ซื้อ</td></tr>
+                <tr><td class="col-name">expired_at</td><td class="col-type">timestamp</td><td>วันหมดอายุ (nullable)</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="group-label">กลุ่มที่ 4 — อาหาร เครื่องดื่ม และออเดอร์</div>
+<div class="two-col">
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">categories</span><span class="table-desc">หมวดหมู่อาหาร</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">name</td><td class="col-type">varchar(100)</td><td>ชื่อหมวดหมู่ (เครื่องดื่ม, อาหารจานเดียว ฯลฯ)</td></tr>
+            </tbody>
+        </table>
+        <div class="rel-box"><div class="rel-item">hasMany products</div></div>
+    </div>
+    <div class="table-card">
+        <div class="table-card-header"><span class="table-name">products</span><span class="table-desc">เมนูอาหารและสต็อก</span></div>
+        <table class="cols">
+            <thead><tr><th>Column</th><th>Type</th><th>คำอธิบาย</th></tr></thead>
+            <tbody>
+                <tr><td class="col-name">id</td><td class="col-type">bigint</td><td>PK</td></tr>
+                <tr><td class="col-name">category_id</td><td class="col-type">bigint</td><td>FK→categories</td></tr>
+                <tr><td class="col-name">name</td><td class="col-type">varchar(150)</td><td>ชื่อสินค้า</td></tr>
+                <tr><td class="col-name">price</td><td class="col-type">decimal(10,2)</td><td>ราคาต่อหน่วย</td></tr>
+                <tr><td class="col-name">stock_quantity</td><td class="col-type">integer</td><td>สต็อกคงเหลือ (ตัดอัตโนมัติเมื่อสั่ง)</td></tr>
+                <tr><td class="col-name">image</td><td class="col-type">varchar(255)</td><td>path รูปภาพ (nullable)</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header"><span class="table-name">orders</span><span class="table-desc">คำสั่งซื้ออาหารและเครื่องดื่ม</span></div>
+    <table class="cols">
+        <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">bigint</td><td><span class="badge badge-pk">PK</span></td><td>รหัสออเดอร์</td></tr>
+            <tr><td class="col-name">user_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→users</span></td><td>ลูกค้าที่สั่ง</td></tr>
+            <tr><td class="col-name">seat_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→seats</span></td><td>เครื่องที่ต้องการให้ส่ง</td></tr>
+            <tr><td class="col-name">session_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→seat_sessions</span> <span class="badge badge-null">nullable</span></td><td>เซสชันที่กำลังใช้</td></tr>
+            <tr><td class="col-name">total_amount</td><td class="col-type">decimal(10,2)</td><td>default: 0.00</td><td>ยอดรวม</td></tr>
+            <tr><td class="col-name">payment_method</td><td class="col-type">varchar(20)</td><td></td><td><code>wallet</code> / <code>promptpay</code> / <code>cash</code></td></tr>
+            <tr><td class="col-name">payment_status</td><td class="col-type">varchar(20)</td><td>default: pending</td><td><code>pending</code> / <code>paid</code> / <code>cancelled</code></td></tr>
+            <tr><td class="col-name">order_status</td><td class="col-type">varchar(20)</td><td>default: pending</td><td><code>pending</code> → <code>preparing</code> → <code>served</code> / <code>cancelled</code></td></tr>
+        </tbody>
+    </table>
+    <div class="rel-box"><div class="rel-item">belongsTo users / seats / seat_sessions · hasMany order_items</div></div>
+</div>
+
+<div class="table-card">
+    <div class="table-card-header"><span class="table-name">order_items</span><span class="table-desc">รายการสินค้าย่อยในออเดอร์ (Line Items)</span></div>
+    <table class="cols">
+        <thead><tr><th>Column</th><th>Type</th><th>Constraint</th><th>คำอธิบาย</th></tr></thead>
+        <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">bigint</td><td><span class="badge badge-pk">PK</span></td><td>รหัสรายการย่อย</td></tr>
+            <tr><td class="col-name">order_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→orders</span> CASCADE</td><td>ลบออเดอร์แล้วรายการย่อยลบตาม</td></tr>
+            <tr><td class="col-name">product_id</td><td class="col-type">bigint</td><td><span class="badge badge-fk">FK→products</span></td><td>สินค้าที่สั่ง</td></tr>
+            <tr><td class="col-name">quantity</td><td class="col-type">integer</td><td></td><td>จำนวน</td></tr>
+            <tr><td class="col-name">unit_price ⚡</td><td class="col-type">decimal(10,2)</td><td></td><td>ราคา ณ เวลาสั่ง (Snapshot ป้องกันราคาเปลี่ยน)</td></tr>
+            <tr><td class="col-name">subtotal</td><td class="col-type">decimal(10,2)</td><td></td><td>quantity × unit_price</td></tr>
+        </tbody>
+    </table>
+    <div class="rel-box"><div class="rel-item">belongsTo orders / products</div></div>
+</div>
+
+<!-- SECTION 4 — WORKFLOW -->
+<div class="page-break"></div>
+<div class="section-header"><div class="section-number">4</div><h2>ขั้นตอนการทำงาน (System Workflow &amp; Data Flow)</h2></div>
+
+<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <p style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 12px;">Customer Journey — ภาพรวมขั้นตอน</p>
+    <div class="workflow-flow">
+        <div class="flow-step"><div class="flow-icon">👤</div><div class="flow-title">สมัคร/ล็อกอิน</div><div class="flow-tables">users</div></div>
+        <div class="flow-step"><div class="flow-icon">💰</div><div class="flow-title">เติมเงิน</div><div class="flow-tables">users.balance<br>wallet_transactions</div></div>
+        <div class="flow-step"><div class="flow-icon">📦</div><div class="flow-title">ซื้อแพ็กเกจ</div><div class="flow-tables">user_packages<br>wallet_transactions</div></div>
+        <div class="flow-step"><div class="flow-icon">🖥️</div><div class="flow-title">เปิดเครื่อง</div><div class="flow-tables">seats<br>seat_sessions</div></div>
+        <div class="flow-step"><div class="flow-icon">🍜</div><div class="flow-title">สั่งอาหาร</div><div class="flow-tables">orders<br>order_items<br>products</div></div>
+        <div class="flow-step"><div class="flow-icon">🚪</div><div class="flow-title">จบเซสชัน</div><div class="flow-tables">seat_sessions<br>wallet_transactions</div></div>
+    </div>
+</div>
+
+<div class="workflow-block">
+    <h4>🔄 Workflow 1 — เติมเงิน (Top-up)</h4>
+    <ol class="workflow-steps">
+        <li>Staff รับเงินสดหรือยืนยัน QR แล้วเลือกลูกค้าในระบบ</li>
+        <li>ตรวจสอบจำนวน: ขั้นต่ำ <strong>20 บาท</strong>, สูงสุดต่อครั้ง <strong>10,000 บาท</strong></li>
+        <li>อัปเดต <code>users.balance</code> += จำนวนที่เติม</li>
+        <li>บันทึก <code>wallet_transactions</code>: type = <code>topup</code>, ref_type = <code>cash_topup</code> หรือ <code>qr_topup</code></li>
+        <li>ทุกขั้นตอนอยู่ใน <code>DB::transaction()</code> — ล้มเหลวตรงไหน Rollback ทั้งหมด</li>
+    </ol>
+</div>
+
+<div class="workflow-block">
+    <h4>📦 Workflow 2 — ซื้อแพ็กเกจ (Buy Package)</h4>
+    <ol class="workflow-steps">
+        <li>ลูกค้าเลือกแพ็กเกจจากหน้าเว็บ (ดึงจาก <code>packages</code>)</li>
+        <li>ตรวจสอบ <code>users.balance</code> >= <code>packages.price</code></li>
+        <li>หักเงิน: <code>users.balance</code> -= price</li>
+        <li>สร้าง record ใน <code>user_packages</code>: remaining_minutes = duration_hours × 60</li>
+        <li>บันทึก <code>wallet_transactions</code>: type = <code>deduct</code>, ref_type = <code>package_purchase</code></li>
+    </ol>
+</div>
+
+<div class="workflow-block">
+    <h4>🖥️ Workflow 3 — เปิดเครื่อง (Open Session)</h4>
+    <ol class="workflow-steps">
+        <li>เลือกเครื่องจาก Seat Map — ดึง <code>seats</code> ที่ status = <code>available</code></li>
+        <li>เลือกโหมด: <strong>A) Pay As You Go</strong> (ต้องมี balance ≥ 20 บาท) หรือ <strong>B) ใช้แพ็กเกจ</strong></li>
+        <li>สร้าง <code>seat_sessions</code>: status = <code>active</code>, start_time = now(), rate_snapshot = คัดลอกจาก <code>zones.hourly_rate</code> ทันที ⚡</li>
+        <li>อัปเดต <code>seats.status</code> = <code>occupied</code></li>
+        <li>ถ้าใช้แพ็กเกจ: เชื่อม <code>seat_sessions.user_package_id</code> กับ <code>user_packages</code></li>
+    </ol>
+</div>
+
+<div class="workflow-block">
+    <h4>🍜 Workflow 4 — สั่งอาหาร (Place Order)</h4>
+    <ol class="workflow-steps">
+        <li>ลูกค้าเลือกเมนูจากหน้า Order (ดึง <code>products</code> + <code>categories</code>)</li>
+        <li>ตรวจสอบ <code>products.stock_quantity</code> เพียงพอ</li>
+        <li>ตรวจสอบ <code>users.balance</code> >= ยอดรวม</li>
+        <li>หักเงิน <code>users.balance</code> และตัดสต็อก <code>products.stock_quantity</code></li>
+        <li>สร้าง <code>orders</code>: payment_status = <code>paid</code>, order_status = <code>pending</code></li>
+        <li>สร้าง <code>order_items</code>: unit_price = คัดลอกราคาสินค้า ณ เวลานี้ ⚡</li>
+        <li>บันทึก <code>wallet_transactions</code>: type = <code>deduct</code>, ref_type = <code>order</code></li>
+    </ol>
+</div>
+
+<div class="workflow-block">
+    <h4>🚪 Workflow 5 — จบเซสชัน (End Session)</h4>
+    <ol class="workflow-steps">
+        <li>Staff กด Check-out หรือระบบตัดอัตโนมัติ</li>
+        <li>คำนวณเวลาที่ใช้: end_time - start_time (นาที)</li>
+        <li><strong>Pay As You Go:</strong> ค่าใช้จ่าย = (นาทีที่ใช้ / 60) × rate_snapshot → หัก <code>users.balance</code> → บันทึก <code>wallet_transactions</code></li>
+        <li><strong>ใช้แพ็กเกจ:</strong> หัก <code>user_packages.remaining_minutes</code> -= นาทีที่ใช้, total_cost = 0</li>
+        <li>อัปเดต <code>seat_sessions</code>: status = <code>completed</code>, end_time = now()</li>
+        <li>อัปเดต <code>seats.status</code> = <code>available</code></li>
+    </ol>
+</div>
+
+<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:16px;">
+    <p style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin:0 0 10px;">วงจรสถานะออเดอร์อาหาร (Order Status Lifecycle)</p>
+    <div class="workflow-flow" style="flex-wrap:nowrap;gap:0;align-items:center;">
+        <div class="flow-step" style="min-width:90px;"><div class="flow-icon" style="background:#fef3c7;border-color:#f59e0b;">⏳</div><div class="flow-title">pending</div><div class="flow-tables">รอดำเนินการ</div></div>
+        <div class="flow-step" style="min-width:90px;"><div class="flow-icon" style="background:#e0f2fe;border-color:#0284c7;">👨‍🍳</div><div class="flow-title">preparing</div><div class="flow-tables">กำลังทำอาหาร</div></div>
+        <div class="flow-step" style="min-width:90px;"><div class="flow-icon" style="background:#dcfce7;border-color:#16a34a;">✅</div><div class="flow-title">served</div><div class="flow-tables">เสิร์ฟแล้ว</div></div>
+        <div class="flow-step" style="min-width:90px;"><div class="flow-icon" style="background:#fee2e2;border-color:#dc2626;">❌</div><div class="flow-title">cancelled</div><div class="flow-tables">ยกเลิก (คืนเงิน)</div></div>
+    </div>
+    <p style="font-size:11px;color:#64748b;margin:8px 0 0;">Staff จัดการสถานะผ่านหน้า Kitchen Management &nbsp;|&nbsp; ยกเลิกออเดอร์จะ Rollback เงินคืนผ่าน <code>wallet_transactions</code> type = <code>refund</code></p>
+</div>
+
+<!-- SECTION 5 — DESIGN RATIONALE -->
+<div class="page-break"></div>
+<div class="section-header"><div class="section-number">5</div><h2>เหตุผลในการออกแบบ (Design Rationale)</h2></div>
+
+<div class="rationale-card">
+    <h4>⚡ 1. Snapshot Pattern — ป้องกันราคาเปลี่ยนย้อนหลัง</h4>
+    <p><strong>ปัญหา:</strong> หากร้านปรับราคาโซนหรือเมนูอาหาร ยอดบิลเก่าที่บันทึกไว้จะผิดพลาด</p>
+    <p><strong>วิธีแก้:</strong> คัดลอกราคา ณ เวลาที่ทำรายการเก็บไว้ในคอลัมน์แยก:</p>
+    <ul>
+        <li><code>seat_sessions.rate_snapshot</code> — จาก zones.hourly_rate ตอนเปิดเครื่อง</li>
+        <li><code>order_items.unit_price</code> — จาก products.price ตอนสั่งอาหาร</li>
+    </ul>
+    <p><strong>ผล:</strong> ประวัติทางการเงินทุกรายการถูกต้อง แม้ราคาปัจจุบันจะเปลี่ยนไปแล้ว</p>
+</div>
+
+<div class="rationale-card">
+    <h4>🔒 2. Foreign Key Constraints — ป้องกัน Orphan Records</h4>
+    <table class="fk-table">
+        <thead><tr><th>รูปแบบ</th><th>ใช้กับ</th><th>ผลที่เกิดขึ้น</th></tr></thead>
+        <tbody>
+            <tr><td><span class="restrict">RESTRICT</span></td><td>ความสัมพันธ์ส่วนใหญ่</td><td>ห้ามลบข้อมูลต้นทางที่มีลูกผูกอยู่ → ป้องกันสูญเสียประวัติการเงิน</td></tr>
+            <tr><td><span class="cascade">CASCADE</span></td><td>orders → order_items</td><td>ลบออเดอร์แล้วรายการย่อยลบตาม → ไม่มีเศษข้อมูลค้างอยู่</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="rationale-card">
+    <h4>🏦 3. ACID Transaction — การันตีความสมบูรณ์</h4>
+    <p>ทุกรายการที่แตะข้อมูลมากกว่า 1 ตารางถูกห่อด้วย <code>DB::transaction()</code></p>
+    <ul>
+        <li><strong>Atomicity:</strong> สำเร็จทั้งหมด หรือ Rollback ทั้งหมด — ไม่มีสถานะค้างกลางทาง</li>
+        <li><strong>Consistency:</strong> users.balance ต้องตรงกับผลรวมใน wallet_transactions เสมอ</li>
+        <li><strong>Isolation:</strong> แต่ละรายการไม่รบกวนกัน</li>
+        <li><strong>Durability:</strong> เมื่อ commit แล้วข้อมูลบันทึกถาวร</li>
+    </ul>
+</div>
+
+<div class="rationale-card">
+    <h4>📊 4. Rich Pivot Table (user_packages) — ไม่ใช่ Pivot ธรรมดา</h4>
+    <p><strong>ปัญหา:</strong> Pivot Table ทั่วไปไม่สามารถบันทึก "เวลาที่เหลือ" หรือ "วันหมดอายุ" ต่อ Instance ได้ และซื้อซ้ำไม่ได้</p>
+    <p><strong>วิธีแก้:</strong> <code>user_packages</code> มี id เป็นของตัวเอง เก็บ remaining_minutes และ expired_at แยกต่อแถว → ลูกค้าซื้อแพ็กเกจเดิมซ้ำได้ไม่จำกัด</p>
+</div>
+
+<div class="rationale-card">
+    <h4>👤 5. Single Table Inheritance สำหรับ Role</h4>
+    <p>แทนที่จะแยกตาราง admin/staff/customer ออกจากกัน ระบบเก็บทุก role ในตาราง <code>users</code> เดียว โดยใช้คอลัมน์ <code>role</code> แยกสิทธิ์ผ่าน Laravel Middleware</p>
+    <div class="status-grid">
+        <div class="status-card">
+            <div class="status-card-title">role = admin</div>
+            <div class="status-list">
+                <div class="status-item"><div class="status-dot" style="background:#dc2626;"></div>จัดการผู้ใช้ / เติมเงิน</div>
+                <div class="status-item"><div class="status-dot" style="background:#dc2626;"></div>จัดการโซน / แพ็กเกจ / สินค้า</div>
+                <div class="status-item"><div class="status-dot" style="background:#dc2626;"></div>ดูรายงานทั้งหมด</div>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="status-card-title">role = staff</div>
+            <div class="status-list">
+                <div class="status-item"><div class="status-dot" style="background:#f59e0b;"></div>เปิด/ปิดเครื่องให้ลูกค้า</div>
+                <div class="status-item"><div class="status-dot" style="background:#f59e0b;"></div>จัดการออเดอร์อาหาร</div>
+                <div class="status-item"><div class="status-dot" style="background:#f59e0b;"></div>ดู Seat Map</div>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="status-card-title">role = customer</div>
+            <div class="status-list">
+                <div class="status-item"><div class="status-dot" style="background:#16a34a;"></div>เลือกที่นั่ง / เปิดเครื่อง</div>
+                <div class="status-item"><div class="status-dot" style="background:#16a34a;"></div>ซื้อแพ็กเกจ / สั่งอาหาร</div>
+                <div class="status-item"><div class="status-dot" style="background:#16a34a;"></div>ดูประวัติตัวเอง</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 6 — BUSINESS RULES -->
+<div class="section-header"><div class="section-number">6</div><h2>กฎเกณฑ์ทางธุรกิจ (Business Rules)</h2></div>
+<div class="two-col">
+    <div>
+        <div class="table-card">
+            <div class="table-card-header"><span class="table-name" style="background:#dcfce7;color:#166534;">💰 กระเป๋าเงิน</span></div>
+            <div style="padding:10px 14px;font-size:12px;">
+                <div class="status-item" style="margin-bottom:6px;"><div class="status-dot" style="background:#dc2626;"></div>เติมขั้นต่ำ: <strong>20 บาท</strong></div>
+                <div class="status-item" style="margin-bottom:6px;"><div class="status-dot" style="background:#dc2626;"></div>เติมสูงสุดต่อครั้ง: <strong>10,000 บาท</strong></div>
+                <div class="status-item" style="margin-bottom:6px;"><div class="status-dot" style="background:#dc2626;"></div>ยอดขั้นต่ำก่อนเปิดเครื่อง: <strong>20 บาท</strong></div>
+                <div class="status-item"><div class="status-dot" style="background:#dc2626;"></div>ต้องมียอดพอก่อนสั่งอาหาร</div>
+            </div>
+        </div>
+        <div class="table-card" style="margin-top:10px;">
+            <div class="table-card-header"><span class="table-name" style="background:#e0f2fe;color:#0369a1;">🖥️ ราคาต่อชั่วโมง</span></div>
+            <div style="padding:10px 14px;font-size:12px;">
+                <div class="status-item" style="margin-bottom:6px;"><div class="status-dot" style="background:#6b7280;"></div>Standard Zone (165Hz): <strong>40 บาท</strong></div>
+                <div class="status-item" style="margin-bottom:6px;"><div class="status-dot" style="background:#7c3aed;"></div>VIP High-End (240Hz): <strong>60 บาท</strong></div>
+                <div class="status-item"><div class="status-dot" style="background:#f59e0b;"></div>Duo Private Room: <strong>100 บาท</strong></div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="table-card">
+            <div class="table-card-header"><span class="table-name" style="background:#f3e8ff;color:#6d28d9;">👤 บัญชีทดสอบ</span></div>
+            <div style="padding:10px 14px;">
+                <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+                    <thead><tr style="background:#f8fafc;"><th style="padding:5px;text-align:left;border-bottom:1px solid #e2e8f0;">Username</th><th style="padding:5px;text-align:left;border-bottom:1px solid #e2e8f0;">Role</th><th style="padding:5px;text-align:left;border-bottom:1px solid #e2e8f0;">Password</th><th style="padding:5px;text-align:right;border-bottom:1px solid #e2e8f0;">Balance</th></tr></thead>
+                    <tbody>
+                        <tr><td style="padding:5px;font-family:monospace;">admin</td><td style="padding:5px;color:#dc2626;font-weight:700;">Admin</td><td style="padding:5px;font-family:monospace;">password</td><td style="padding:5px;text-align:right;">1,000 ฿</td></tr>
+                        <tr style="background:#f8fafc;"><td style="padding:5px;font-family:monospace;">staff</td><td style="padding:5px;color:#f59e0b;font-weight:700;">Staff</td><td style="padding:5px;font-family:monospace;">password</td><td style="padding:5px;text-align:right;">500 ฿</td></tr>
+                        <tr><td style="padding:5px;font-family:monospace;">customer1</td><td style="padding:5px;color:#16a34a;font-weight:700;">Customer</td><td style="padding:5px;font-family:monospace;">1</td><td style="padding:5px;text-align:right;">—</td></tr>
+                        <tr style="background:#f8fafc;"><td style="padding:5px;font-family:monospace;">customer2</td><td style="padding:5px;color:#16a34a;font-weight:700;">Customer</td><td style="padding:5px;font-family:monospace;">password</td><td style="padding:5px;text-align:right;">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-card" style="margin-top:10px;">
+            <div class="table-card-header"><span class="table-name" style="background:#fef3c7;color:#92400e;">⚙️ ตารางระบบ Laravel</span></div>
+            <div style="padding:10px 14px;font-size:11.5px;">
+                <div class="status-item" style="margin-bottom:4px;"><div class="status-dot" style="background:#94a3b8;"></div><code>migrations</code> — ประวัติ Migration</div>
+                <div class="status-item" style="margin-bottom:4px;"><div class="status-dot" style="background:#94a3b8;"></div><code>sessions</code> — สถานะล็อกอิน</div>
+                <div class="status-item" style="margin-bottom:4px;"><div class="status-dot" style="background:#94a3b8;"></div><code>password_reset_tokens</code></div>
+                <div class="status-item" style="margin-bottom:4px;"><div class="status-dot" style="background:#94a3b8;"></div><code>cache / cache_locks</code></div>
+                <div class="status-item"><div class="status-dot" style="background:#94a3b8;"></div><code>jobs / failed_jobs</code></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="divider" style="margin-top:24px;">
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#9ca3af;">
+    <span>LETSPLAY GAMING — Database Technical Documentation</span>
+    <span>PHP 8.4 · Laravel 12 · SQLite · 11 Tables</span>
+</div>
+
+</body>
+</html>

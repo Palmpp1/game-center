@@ -2,44 +2,34 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $two_factor_secret
- * @property string|null $two_factor_recovery_codes
- * @property Carbon|null $two_factor_confirmed_at
- * @property string|null $remember_token
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- */
-#[Fillable(['name', 'username', 'email', 'phone', 'role', 'balance', 'password'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'phone',
+        'role',
+        'balance',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -96,18 +86,16 @@ class User extends Authenticatable implements PasskeyUser
         return $this->role === 'admin';
     }
 
-    /**
-     * Get the user's initials
-     */
+    // ตัดย่อชื่อผู้ใช้ไว้แสดงใน avatar
     public function initials(): string
     {
-        $cleanName = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $this->name ?: $this->username);
-        $cleanName = trim(preg_replace('/\s+/', ' ', (string) $cleanName));
+        $name = trim($this->name ?: $this->username ?: 'U');
+        $words = explode(' ', $name);
 
-        $initials = Str::initials($cleanName ?: ($this->name ?: $this->username), true);
+        if (count($words) >= 2) {
+            return mb_strtoupper(mb_substr($words[0], 0, 1) . mb_substr($words[1], 0, 1));
+        }
 
-        return Str::length($initials) > 1
-            ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
-            : ($initials ?: 'U');
+        return mb_strtoupper(mb_substr($name, 0, 1));
     }
 }

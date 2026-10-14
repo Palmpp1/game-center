@@ -1,15 +1,13 @@
 <x-layouts::app :title="__('Sales Report')">
     <div class="d-flex flex-column gap-4">
-        <!-- Notifications -->
-        @if (session()->has('success'))
+                @if (session()->has('success'))
             <div class="alert alert-success d-flex align-items-center gap-2 mb-0 shadow-sm" role="alert">
                 <i class="bi bi-check-circle-fill fs-5"></i>
                 <div>{{ session('success') }}</div>
             </div>
         @endif
 
-        <!-- Header & Period Filter -->
-        <div class="card p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 shadow-sm">
+                <div class="card p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 shadow-sm">
             <div>
                 <div class="step-header">
                     <span class="step-bar"></span>
@@ -46,10 +44,9 @@
             </div>
         </div>
 
-        <!-- Revenue Cards Grid -->
+        <!-- สรุปยอดรายได้ -->
         <div class="row g-3">
-            <!-- Grand Total -->
-            <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card p-3 p-md-4 text-white shadow-sm border-0 h-100" style="background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);">
                     <p class="small fw-bold text-white-50 text-uppercase tracking-wider mb-1">รายได้รวมทั้งหมด (Total Revenue)</p>
                     <h3 class="h2 fw-black font-monospace mb-1">฿{{ number_format($grandTotalRevenue, 2) }}</h3>
@@ -57,8 +54,7 @@
                 </div>
             </div>
 
-            <!-- Gaming Revenue -->
-            <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card p-3 p-md-4 shadow-sm h-100">
                     <p class="small fw-bold text-secondary text-uppercase tracking-wider mb-1">รายได้ค่าชั่วโมงเล่นเกม</p>
                     <h3 class="h3 fw-black text-white font-monospace mb-2">฿{{ number_format($totalGamingRevenue, 2) }}</h3>
@@ -69,8 +65,7 @@
                 </div>
             </div>
 
-            <!-- Food Revenue -->
-            <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card p-3 p-md-4 shadow-sm h-100">
                     <p class="small fw-bold text-secondary text-uppercase tracking-wider mb-1">รายได้อาหารและเครื่องดื่ม</p>
                     <h3 class="h3 fw-black text-white font-monospace mb-2">฿{{ number_format($foodRevenue, 2) }}</h3>
@@ -78,8 +73,7 @@
                 </div>
             </div>
 
-            <!-- Topup Total -->
-            <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card p-3 p-md-4 shadow-sm h-100">
                     <p class="small fw-bold text-secondary text-uppercase tracking-wider mb-1">ยอดเงินที่เติมเข้า Wallet</p>
                     <h3 class="h3 fw-black text-success font-monospace mb-2">฿{{ number_format($totalTopup, 2) }}</h3>
@@ -88,10 +82,8 @@
             </div>
         </div>
 
-        <!-- Data Tables: Top Products and Zones -->
-        <div class="row g-4">
-            <!-- Top 5 Products -->
-            <div class="col-12 col-lg-6">
+                <div class="row g-4">
+                        <div class="col-12 col-lg-6">
                 <div class="card p-4 shadow-sm h-100">
                     <div class="step-header mb-3">
                         <span class="step-bar"></span>
@@ -131,8 +123,7 @@
                 </div>
             </div>
 
-            <!-- Revenue by Zone -->
-            <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-6">
                 <div class="card p-4 shadow-sm h-100">
                     <div class="step-header mb-3">
                         <span class="step-bar"></span>
