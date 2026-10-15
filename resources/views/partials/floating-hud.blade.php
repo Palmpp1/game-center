@@ -79,8 +79,6 @@
                 >
                     <div class="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle pb-2 mb-2 gap-2">
                         <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                            <button type="button" @click="minimized = true" class="btn btn-sm btn-link text-secondary p-0 text-decoration-none flex-shrink-0" title="ย่อขนาด"></button>
-                                
                             <span class="badge bg-success rounded-circle p-1"></span>
                             <span class="text-danger fw-bold small text-nowrap">LETSPLAY CLIENT HUD</span>
                         </div>
