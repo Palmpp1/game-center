@@ -14,13 +14,16 @@ use Illuminate\Support\Facades\DB;
 
 class WalletController extends Controller
 {
+    // แสดงหน้ากระเป๋าเงิน เติมเงิน และรายการแพ็กเกจเวลา
     public function index()
     {
         $user = Auth::user();
 
+        // 1. ดึงข้อมูลโซนพร้อมแพ็กเกจของแต่ละโซน
         $zones = Zone::with('packages')->get();
         $packages = $zones->flatMap->packages;
 
+        // 2. ดึงรายการแพ็กเกจที่ผู้ใช้ซื้อไว้และยังมีเวลาเหลือ
         $userPackages = UserPackage::with('package.zone')
             ->has('package')
             ->where('user_id', $user->id)
@@ -32,6 +35,7 @@ class WalletController extends Controller
             ->latest()
             ->get();
 
+        // 3. ดึงประวัติการทำรายการกระเป๋าเงิน 10 รายการล่าสุด
         $transactions = WalletTransaction::where('user_id', $user->id)
             ->latest()
             ->take(10)
@@ -42,6 +46,7 @@ class WalletController extends Controller
         return view('pages.customer.topup', compact('user', 'zones', 'packages', 'userPackages', 'myPackages', 'transactions'));
     }
 
+    // ฟังก์ชันเติมเงินเข้ากระเป๋าเงิน (Wallet)
     public function topUp(Request $request)
     {
         $request->validate([
@@ -71,6 +76,7 @@ class WalletController extends Controller
         return redirect()->back()->with('success', 'เติมเงินสำเร็จ ฿' . number_format($amount, 2));
     }
 
+    // ฟังก์ชันซื้อแพ็กเกจเวลา
     public function buyPackage(Request $request)
     {
         $request->validate([
@@ -80,6 +86,7 @@ class WalletController extends Controller
         $package = Package::with('zone')->findOrFail((int) $request->input('package_id'));
         $user = Auth::user();
 
+        // ตรวจสอบยอดเงินเบื้องต้นก่อนเปิด database transaction
         if ((float) $user->balance < (float) $package->price) {
             return redirect()->back()->with('error', 'ยอดเงินในกระเป๋าไม่พอซื้อแพ็กเกจนี้ กรุณาเติมเงินก่อน');
         }
@@ -93,9 +100,11 @@ class WalletController extends Controller
                     throw new \Exception('ยอดเงินในกระเป๋าไม่พอซื้อแพ็กเกจนี้ กรุณาเติมเงินก่อน');
                 }
 
+                // หักเงินค่าแพ็กเกจออกจากกระเป๋า
                 $freshUser->balance = (float) $freshUser->balance - $packagePrice;
                 $freshUser->save();
 
+                // บันทึกประวัติการหักเงินลงตาราง wallet_transactions
                 WalletTransaction::create([
                     'user_id' => $freshUser->id,
                     'type' => 'deduct',
@@ -104,6 +113,7 @@ class WalletController extends Controller
                     'ref_id' => $package->id,
                 ]);
 
+                // บันทึกข้อมูลแพ็กเกจของสมาชิก (อายุการใช้งาน 30 วัน)
                 $totalMinutes = $package->duration_hours * 60;
                 UserPackage::create([
                     'user_id' => $freshUser->id,
