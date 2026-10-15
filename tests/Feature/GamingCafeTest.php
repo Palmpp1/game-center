@@ -268,8 +268,8 @@ class GamingCafeTest extends TestCase
     public function test_insufficient_balance_cannot_checkin_pay_as_you_go(): void
     {
         $this->actingAs($this->user);
-        // มีเงิน 10 บาท (น้อยกว่าขั้นต่ำ 20 บาท)
-        $this->user->update(['balance' => 10.00]);
+        // มียอดเงิน 0.00 บาท
+        $this->user->update(['balance' => 0.00]);
 
         $response = $this->from(route('customer.seat-map'))->post(route('customer.check-in'), [
             'seat_id' => $this->seat->id,
@@ -286,7 +286,7 @@ class GamingCafeTest extends TestCase
         $this->assertNull($session);
 
         $this->user->refresh();
-        $this->assertEquals(10.00, (float) $this->user->balance);
+        $this->assertEquals(0.00, (float) $this->user->balance);
     }
 
     public function test_package_session_ends_without_deducting_wallet_balance(): void

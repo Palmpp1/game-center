@@ -61,12 +61,12 @@ test('dashboard displays 15-minute time low alert when time is almost exhausted'
         'purchased_at' => Carbon::now(),
     ]);
 
-    // เล่นไปแล้ว 50 นาที เหลือ 10 นาที (<= 15 นาที)
+    // เล่นไปแล้ว 58 นาที เหลือ 2 นาที (<= 3 นาที)
     $session = SeatSession::create([
         'user_id' => $user->id,
         'seat_id' => $seat->id,
         'user_package_id' => $userPackage->id,
-        'start_time' => Carbon::now()->subMinutes(50),
+        'start_time' => Carbon::now()->subMinutes(58),
         'rate_snapshot' => 20.00,
         'status' => 'active',
     ]);

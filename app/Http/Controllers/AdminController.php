@@ -15,19 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    private function authorizeAdmin(): void
-    {
-        if (auth()->user()?->role !== 'admin') {
-            abort(403, 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (เฉพาะผู้ดูแลระบบ Admin เท่านั้น)');
-        }
-    }
-
-
     // แสดงหน้าจัดการสต็อกและสินค้า
     public function stockManager()
     {
-        $this->authorizeAdmin();
-
         $categories = Category::all();
         $products = Product::with('category')->orderBy('category_id')->get();
 
@@ -37,8 +27,6 @@ class AdminController extends Controller
     // ฟังก์ชันปรับเพิ่มหรือลดจำนวนสต็อกสินค้า
     public function adjustStock(Request $request)
     {
-        $this->authorizeAdmin();
-
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'delta' => 'required|integer',
@@ -69,8 +57,6 @@ class AdminController extends Controller
     // ฟังก์ชันเพิ่มสินค้าใหม่เข้าระบบ
     public function createProduct(Request $request)
     {
-        $this->authorizeAdmin();
-
         $request->validate([
             'name' => 'required|string|max:150',
             'category_id' => 'required|exists:categories,id',
@@ -94,8 +80,6 @@ class AdminController extends Controller
     // แสดงหน้ารายงานยอดขายและรายได้ (Financial & Sales Report)
     public function salesReport(Request $request)
     {
-        $this->authorizeAdmin();
-
         $period = $request->input('period', 'all');
 
         $startDate = null;

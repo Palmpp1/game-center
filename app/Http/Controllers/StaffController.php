@@ -12,19 +12,9 @@ use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
-    private function authorizeStaff(): void
-    {
-        $role = auth()->user()?->role;
-        if ($role !== 'staff' && $role !== 'admin') {
-            abort(403, 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (เฉพาะพนักงานและผู้ดูแลระบบ)');
-        }
-    }
-
     // แสดงหน้าจอมอนิเตอร์สถานะเครื่องคอมพิวเตอร์หน้าร้าน
     public function seatMonitor()
     {
-        $this->authorizeStaff();
-
         // 1. ดึงข้อมูลโซนและเครื่องทั้งหมดพร้อมข้อมูลเซสชันที่กำลังเล่น
         $zones = Zone::with(['seats.zone', 'seats.seatSessions' => function ($q) {
             $q->where('status', 'active')->with(['user', 'userPackage.package']);
@@ -48,8 +38,6 @@ class StaffController extends Controller
     // ฟังก์ชันบังคับปิดเครื่องและคิดเงิน (โดยพนักงาน)
     public function forceEnd(Request $request, EndSeatSession $endSeatSession)
     {
-        $this->authorizeStaff();
-
         $request->validate([
             'session_id' => 'required|exists:seat_sessions,id',
         ]);
@@ -68,8 +56,6 @@ class StaffController extends Controller
     // ฟังก์ชันสลับสถานะเครื่องระหว่าง "พร้อมใช้งาน" กับ "ซ่อมบำรุง"
     public function toggleMaintenance(Request $request)
     {
-        $this->authorizeStaff();
-
         $request->validate([
             'seat_id' => 'required|exists:seats,id',
         ]);
@@ -97,8 +83,6 @@ class StaffController extends Controller
     // แสดงหน้าคิวอาหารในห้องครัว (Kitchen Queue)
     public function kitchenQueue(Request $request)
     {
-        $this->authorizeStaff();
-
         $filterStatus = $request->input('status', 'active');
 
         $query = Order::with(['items.product', 'seat', 'user']);
@@ -127,8 +111,6 @@ class StaffController extends Controller
     // ฟังก์ชันอัปเดตสถานะอาหารในครัว
     public function updateOrderStatus(Request $request)
     {
-        $this->authorizeStaff();
-
         $request->validate([
             'order_id' => 'required|exists:orders,id',
             'status' => 'required|in:pending,preparing,served,cancelled',
@@ -170,8 +152,6 @@ class StaffController extends Controller
     // ฟังก์ชันยืนยันการรับเงินสด
     public function confirmCashPayment(Request $request)
     {
-        $this->authorizeStaff();
-
         $request->validate([
             'order_id' => 'required|exists:orders,id',
         ]);

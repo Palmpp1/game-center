@@ -36,20 +36,24 @@ Route::middleware(['auth'])->group(function () {
     // -------------------------------------------------------------
     // Staff & Kitchen Portal
     // -------------------------------------------------------------
-    Route::get('/staff/seat-monitor', [StaffController::class, 'seatMonitor'])->name('staff.seat-monitor');
-    Route::post('/staff/force-end', [StaffController::class, 'forceEnd'])->name('staff.force-end');
-    Route::post('/staff/toggle-seat', [StaffController::class, 'toggleMaintenance'])->name('staff.toggle-seat');
-    Route::get('/staff/kitchen-queue', [StaffController::class, 'kitchenQueue'])->name('staff.kitchen-queue');
-    Route::post('/staff/orders/status', [StaffController::class, 'updateOrderStatus'])->name('staff.update-order-status');
-    Route::post('/staff/orders/confirm-cash', [StaffController::class, 'confirmCashPayment'])->name('staff.confirm-cash');
+    Route::middleware('staff')->group(function () {
+        Route::get('/staff/seat-monitor', [StaffController::class, 'seatMonitor'])->name('staff.seat-monitor');
+        Route::post('/staff/force-end', [StaffController::class, 'forceEnd'])->name('staff.force-end');
+        Route::post('/staff/toggle-seat', [StaffController::class, 'toggleMaintenance'])->name('staff.toggle-seat');
+        Route::get('/staff/kitchen-queue', [StaffController::class, 'kitchenQueue'])->name('staff.kitchen-queue');
+        Route::post('/staff/orders/status', [StaffController::class, 'updateOrderStatus'])->name('staff.update-order-status');
+        Route::post('/staff/orders/confirm-cash', [StaffController::class, 'confirmCashPayment'])->name('staff.confirm-cash');
+    });
 
     // -------------------------------------------------------------
     // Admin Management Portal
     // -------------------------------------------------------------
-    Route::get('/admin/stock-manager', [AdminController::class, 'stockManager'])->name('admin.stock-manager');
-    Route::post('/admin/stock/adjust', [AdminController::class, 'adjustStock'])->name('admin.adjust-stock');
-    Route::post('/admin/products', [AdminController::class, 'createProduct'])->name('admin.create-product');
-    Route::get('/admin/sales-report', [AdminController::class, 'salesReport'])->name('admin.sales-report');
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin/stock-manager', [AdminController::class, 'stockManager'])->name('admin.stock-manager');
+        Route::post('/admin/stock/adjust', [AdminController::class, 'adjustStock'])->name('admin.adjust-stock');
+        Route::post('/admin/products', [AdminController::class, 'createProduct'])->name('admin.create-product');
+        Route::get('/admin/sales-report', [AdminController::class, 'salesReport'])->name('admin.sales-report');
+    });
 });
 
 require __DIR__.'/settings.php';
