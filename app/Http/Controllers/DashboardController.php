@@ -19,32 +19,26 @@ class DashboardController extends Controller
         protected EndSeatSession $endSeatSession
     ) {}
 
-    // แสดงหน้าแดชบอร์ดหลักของลูกค้า
     public function index()
     {
         $user = Auth::user();
 
-        // 1. ตรวจสอบและตัดจบเซสชันที่เวลาหรือเงินหมดอัตโนมัติ
         $this->autoEndExpiredSessions();
         $user->refresh();
 
-        // 2. ดึงข้อมูลเครื่องที่กำลังเปิดใช้งานอยู่
         $activeSession = SeatSession::with(['seat.zone', 'userPackage.package'])
             ->where('user_id', $user->id)
             ->where('status', 'active')
             ->latest()
             ->first();
 
-        // 3. คำนวณเวลาและค่าบริการที่ใช้ไปในเซสชันปัจจุบัน
         $stats = $this->calculateSessionStats($activeSession, $user);
         $elapsedMinutes = $stats['elapsedMinutes'];
         $estimatedCost = $stats['estimatedCost'];
         $sessionRemainingMinutes = $stats['sessionRemainingMinutes'];
 
-        // 4. คำนวณยอดเงินคงเหลือที่ใช้ได้จริง (หักค่าชั่วโมงที่กำลังเล่นอยู่) ป้องกันเวลาสั่งอาหารจนไม่เหลือให้ค่าเครื่อง
         $availableBalance = $this->calculateAvailableBalance($user, $activeSession);
 
-        // 5. ดึงรายการแพ็กเกจที่ผู้ใช้ซื้อไว้
         $userPackages = UserPackage::with('package.zone')
             ->has('package')
             ->where('user_id', $user->id)
@@ -56,7 +50,6 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        // 6. ดึงประวัติการเติมเงินและสั่งอาหารล่าสุด
         $transactions = WalletTransaction::where('user_id', $user->id)->latest()->take(5)->get();
         $recentOrders = Order::with('seat')->where('user_id', $user->id)->latest()->take(5)->get();
 
@@ -73,12 +66,10 @@ class DashboardController extends Controller
         ));
     }
 
-    // ฟังก์ชันเช็คเอาท์และปิดเครื่อง
     public function checkOut(Request $request)
     {
         $user = Auth::user();
 
-        // 1. ค้นหาเครื่องที่ผู้ใช้กำลังเปิดใช้งานอยู่
         $session = SeatSession::where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
@@ -87,10 +78,9 @@ class DashboardController extends Controller
             return redirect()->back()->with('error', 'ไม่พบเครื่องที่กำลังใช้งานอยู่');
         }
 
-        // ส่งการคิดเงินและปิดเครื่องให้บริการกลาง เพื่อใช้กฎเดียวกับพนักงาน
         $this->endSeatSession->handle($session);
 
-        return redirect()->back()->with('success', 'เช็คเอาท์ออกจากเครื่องสำเร็จ');
+        return redirect()->back()->with('success', 'เช็คเอาท์เรียบร้อย');
     }
 
     // คำนวณสถิติเวลาและค่าใช้จ่ายของเซสชันปัจจุบัน

@@ -12,15 +12,12 @@ use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
-    // แสดงหน้าจอมอนิเตอร์สถานะเครื่องคอมพิวเตอร์หน้าร้าน
     public function seatMonitor()
     {
-        // 1. ดึงข้อมูลโซนและเครื่องทั้งหมดพร้อมข้อมูลเซสชันที่กำลังเล่น
         $zones = Zone::with(['seats.zone', 'seats.seatSessions' => function ($q) {
             $q->where('status', 'active')->with(['user', 'userPackage.package']);
         }])->get();
 
-        // 2. สรุปจำนวนเครื่องตามสถานะ
         $totalSeats = Seat::count();
         $occupiedSeats = Seat::where('status', 'occupied')->count();
         $availableSeats = Seat::where('status', 'available')->count();
@@ -35,7 +32,6 @@ class StaffController extends Controller
         ));
     }
 
-    // ฟังก์ชันบังคับปิดเครื่องและคิดเงิน (โดยพนักงาน)
     public function forceEnd(Request $request, EndSeatSession $endSeatSession)
     {
         $request->validate([
@@ -50,10 +46,9 @@ class StaffController extends Controller
         $seat = Seat::find($session->seat_id);
         $endSeatSession->handle($session);
 
-        return redirect()->back()->with('success', 'ปิดเครื่อง ' . ($seat ? $seat->seat_number : '') . ' และคิดเงินสำเร็จเรียบร้อยแล้ว');
+        return redirect()->back()->with('success', 'ปิดเครื่อง ' . ($seat ? $seat->seat_number : '') . ' เรียบร้อยแล้ว');
     }
 
-    // ฟังก์ชันสลับสถานะเครื่องระหว่าง "พร้อมใช้งาน" กับ "ซ่อมบำรุง"
     public function toggleMaintenance(Request $request)
     {
         $request->validate([
@@ -80,7 +75,6 @@ class StaffController extends Controller
         return redirect()->back()->with('error', 'ไม่สามารถปรับสถานะเครื่องที่กำลังใช้งานอยู่ได้');
     }
 
-    // แสดงหน้าคิวอาหารในห้องครัว (Kitchen Queue)
     public function kitchenQueue(Request $request)
     {
         $filterStatus = $request->input('status', 'active');
@@ -108,7 +102,6 @@ class StaffController extends Controller
         ));
     }
 
-    // ฟังก์ชันอัปเดตสถานะอาหารในครัว
     public function updateOrderStatus(Request $request)
     {
         $request->validate([
@@ -124,20 +117,18 @@ class StaffController extends Controller
             return redirect()->back()->with('error', 'ไม่พบข้อมูลออเดอร์');
         }
 
-        // ตรวจสอบ: หากยังไม่ได้รับการชำระเงิน ไม่อนุญาตให้เริ่มทำอาหารหรือเสิร์ฟอาหาร
         if (in_array($status, ['preparing', 'served']) && $order->payment_status !== 'paid') {
             $msg = $order->payment_method === 'cash'
-                ? 'ไม่สามารถเปลี่ยนสถานะอาหารได้ เนื่องจากยังไม่ได้ยืนยันการรับเงินสดสำหรับออเดอร์ #' . $order->id . ' กรุณากดยืนยันรับเงินสดก่อน'
-                : 'ไม่สามารถเปลี่ยนสถานะอาหารได้ เนื่องจากออเดอร์ #' . $order->id . ' ยังไม่ได้รับการชำระเงิน';
+                ? 'ยังไม่ได้ยืนยันรับเงินสดสำหรับออเดอร์ #' . $order->id
+                : 'ออเดอร์ #' . $order->id . ' ยังไม่ได้ชำระเงิน';
             return redirect()->back()->with('error', $msg);
         }
 
-        // ถ้ากดยกเลิกออเดอร์ ให้คืนสต็อกสินค้า
         if ($status == 'cancelled' && $order->order_status != 'cancelled') {
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product != null) {
-                    $product->stock_quantity = $product->stock_quantity + $item->quantity;
+                    $product->stock_quantity += $item->quantity;
                     $product->save();
                 }
             }
@@ -146,10 +137,9 @@ class StaffController extends Controller
         $order->order_status = $status;
         $order->save();
 
-        return redirect()->back()->with('success', 'อัปเดตสถานะออเดอร์ #' . $order->id . ' เป็น ' . $status . ' เรียบร้อยแล้ว');
+        return redirect()->back()->with('success', 'อัปเดตสถานะออเดอร์ #' . $order->id . ' เรียบร้อยแล้ว');
     }
 
-    // ฟังก์ชันยืนยันการรับเงินสด
     public function confirmCashPayment(Request $request)
     {
         $request->validate([
@@ -170,6 +160,6 @@ class StaffController extends Controller
         $order->payment_status = 'paid';
         $order->save();
 
-        return redirect()->back()->with('success', 'ยืนยันรับเงินสดออเดอร์ #' . $order->id . ' ยอด ฿' . number_format($order->total_amount, 2) . ' สำเร็จ');
+        return redirect()->back()->with('success', 'ยืนยันรับเงินสดออเดอร์ #' . $order->id . ' สำเร็จ');
     }
 }

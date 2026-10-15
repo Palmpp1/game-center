@@ -41,13 +41,7 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'ไม่พบสินค้า');
         }
 
-        // 2. คำนวณจำนวนสต็อกใหม่ (ไม่ให้ต่ำกว่า 0)
-        $newStock = $product->stock_quantity + $delta;
-        if ($newStock < 0) {
-            $newStock = 0;
-        }
-
-        // 3. บันทึกจำนวนสต็อกใหม่
+        $newStock = max(0, $product->stock_quantity + $delta);
         $product->stock_quantity = $newStock;
         $product->save();
 

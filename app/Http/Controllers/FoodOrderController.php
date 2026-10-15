@@ -17,31 +17,25 @@ use Illuminate\Support\Facades\DB;
 
 class FoodOrderController extends Controller
 {
-    // แสดงหน้าเมนูสั่งอาหารและเครื่องดื่ม
     public function index(Request $request)
     {
         $user = Auth::user();
         $selectedCategoryId = $request->input('category_id');
 
-        // 1. ดึงรายการหมวดหมู่อาหารพร้อมนับจำนวนสินค้าในแต่ละหมวด
         $categories = Category::withCount('products')->get();
 
-        // 2. ดึงรายการสินค้าที่มีสต็อกพร้อมจำหน่าย (กรองตามหมวดหมู่ถ้ามี)
         $productsQuery = Product::with('category')->where('stock_quantity', '>', 0);
         if ($selectedCategoryId) {
             $productsQuery->where('category_id', $selectedCategoryId);
         }
         $products = $productsQuery->get();
 
-        // 3. ตรวจสอบเครื่องที่ลูกค้ากำลังเปิดใช้งานอยู่
         $activeSession = SeatSession::with('seat.zone')
             ->where('user_id', $user->id)
             ->where('status', 'active')
             ->first();
 
-        // 4. คำนวณยอดเงินที่สามารถใช้สั่งอาหารได้จริง
         $availableBalance = $this->calculateAvailableBalance($user, $activeSession);
-
         $activeSeat = $activeSession ? $activeSession->seat : null;
 
         return view('pages.customer.food-order', compact(
@@ -55,7 +49,6 @@ class FoodOrderController extends Controller
         ));
     }
 
-    // ฟังก์ชันสั่งซื้ออาหารและเครื่องดื่ม
     public function placeOrder(Request $request)
     {
         $request->validate([
@@ -73,7 +66,6 @@ class FoodOrderController extends Controller
             return redirect()->back()->with('error', 'กรุณาเลือกรายการสินค้าอย่างน้อย 1 รายการ');
         }
 
-        // 1. ตรวจสอบเครื่องที่ลูกค้ากำลังเปิดใช้งานอยู่
         $seat = Seat::find($seatId);
         if ($seat === null) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลเครื่อง');
@@ -89,7 +81,6 @@ class FoodOrderController extends Controller
             return redirect()->back()->with('error', 'คุณยังไม่ได้เปิดใช้งานเครื่องนี้ กรุณาเปิดเครื่องก่อนทำการสั่งอาหาร');
         }
 
-        // 2. ดำเนินการตัดสต็อกสินค้าและบันทึกออเดอร์ใน transaction
         try {
             $order = DB::transaction(function () use ($user, $seat, $session, $items, $paymentMethod) {
                 $freshUser = User::where('id', $user->id)->lockForUpdate()->first();
@@ -97,16 +88,14 @@ class FoodOrderController extends Controller
                 $totalAmount = $orderData['totalAmount'];
                 $orderItemsList = $orderData['items'];
 
-                // ตรวจสอบยอดเงิน (กรณีชำระด้วย Wallet)
                 $paymentStatus = 'pending_payment';
                 if ($paymentMethod === 'wallet') {
                     $availableBalance = $this->calculateAvailableBalance($freshUser, $session);
 
                     if ($availableBalance < $totalAmount) {
-                        throw new \Exception('ยอดเงินที่ใช้ได้ไม่เพียงพอสำหรับการสั่งอาหาร (ต้องกันเงินไว้จ่ายค่าเครื่องคอมพิวเตอร์)');
+                        throw new \Exception('ยอดเงินที่ใช้ได้ไม่เพียงพอสำหรับการสั่งอาหาร (ต้องกันเงินไว้จ่ายค่าเครื่อง)');
                     }
 
-                    // หักเงินออกจากกระเป๋า
                     $freshUser->balance = (float) $freshUser->balance - $totalAmount;
                     $freshUser->save();
 
@@ -115,7 +104,6 @@ class FoodOrderController extends Controller
                     $paymentStatus = 'paid';
                 }
 
-                // บันทึกคำสั่งซื้อลงตาราง orders
                 $order = Order::create([
                     'user_id' => $freshUser->id,
                     'seat_id' => $seat->id,
@@ -126,7 +114,6 @@ class FoodOrderController extends Controller
                     'order_status' => 'pending',
                 ]);
 
-                // บันทึกรายการสินค้าในคำสั่งซื้อลงตาราง order_items และตัดสต็อกสินค้า
                 foreach ($orderItemsList as $orderItem) {
                     OrderItem::create([
                         'order_id' => $order->id,
@@ -141,7 +128,6 @@ class FoodOrderController extends Controller
                     $productItem->save();
                 }
 
-                // บันทึกประวัติการหักเงินลงตาราง wallet_transactions (ถ้าจ่ายผ่าน Wallet)
                 if ($paymentMethod === 'wallet') {
                     WalletTransaction::create([
                         'user_id' => $freshUser->id,
@@ -158,7 +144,7 @@ class FoodOrderController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'สั่งอาหารสำเร็จ! บิลหมายเลข #' . $order->id . ' พนักงานกำลังจัดเตรียมอาหาร');
+        return redirect()->back()->with('success', 'สั่งอาหารสำเร็จ บิล #' . $order->id);
     }
 
     // ตรวจสอบสต็อกสินค้าและคำนวณราคารวมของแต่ละรายการ
