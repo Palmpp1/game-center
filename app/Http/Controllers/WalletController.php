@@ -117,6 +117,10 @@ class WalletController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect()->back()->with('success', "ซื้อแพ็กเกจ {$package->name} สำเร็จ");
+        $zoneName = $package->zone ? $package->zone->name : 'ทุกโซน';
+        $totalMinutes = $package->duration_hours * 60;
+        $formattedDuration = UserPackage::formatMinutes($totalMinutes);
+
+        return redirect()->back()->with('success', "ซื้อแพ็กเกจ {$package->name} สำเร็จ ได้รับเวลา {$formattedDuration} สำหรับใช้งานในโซน {$zoneName}");
     }
 }
