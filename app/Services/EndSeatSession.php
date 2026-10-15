@@ -12,6 +12,8 @@ use Illuminate\Support\Carbon;
 class EndSeatSession
 {
 
+    // คิดค่าบริการ ปิด session และคืนเครื่องให้เป็นเครื่องว่าง
+    // ใช้ร่วมกันทั้งการเช็คเอาท์ของลูกค้า การตัดจบอัตโนมัติ และการปิดเครื่องโดยพนักงาน
     public function handle(SeatSession $session, ?Carbon $customEndTime = null): float
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($session, $customEndTime) {
@@ -21,6 +23,7 @@ class EndSeatSession
             $usedSeconds = Carbon::parse($session->start_time)->diffInSeconds($endTime);
             $usedMinutes = max(1, (int) ceil($usedSeconds / 60));
 
+            // คิดค่าบริการและตัดยอดเงิน (หรือตัดเวลาแพ็กเกจ)
             $totalCost = $this->chargeSession($user, $session, $usedMinutes);
 
             $session->end_time = $endTime;
@@ -37,21 +40,23 @@ class EndSeatSession
         });
     }
 
+    // คำนวณและตัดยอดค่าบริการ (กรณีแพ็กเกจจะตัดเวลา ถ้าเวลาเกินจะคิดเงินส่วนเกิน)
     private function chargeSession(?User $user, SeatSession $session, int $usedMinutes): float
     {
-        // pay as you go
+        // 1. กรณีคิดเงินตามจริง (Pay as you go)
         if ($session->user_package_id === null) {
             $totalCost = round(($usedMinutes / 60) * (float) $session->rate_snapshot, 2);
             $this->deductFromWallet($user, $session, $totalCost, 'session');
             return $totalCost;
         }
 
-        // package
+        // 2. กรณีใช้แพ็กเกจเวลา (เล่นตามเวลาที่ซื้อไว้ ถ้าครบเวลาก็คือตัดจบ)
         $userPackage = UserPackage::where('id', $session->user_package_id)->lockForUpdate()->first();
         if ($userPackage === null) {
             return 0.00;
         }
 
+        // หักเวลาตามจริงที่เล่นไป (ไม่ให้เหลือต่ำกว่า 0) โดยไม่คิดเงินเพิ่ม
         $userPackage->remaining_minutes = max(0, $userPackage->remaining_minutes - $usedMinutes);
         $userPackage->save();
 

@@ -12,7 +12,7 @@
 - **Design System:** Letsplay Gaming Cafe Theme (Dark Slate, Accent Red `#dc2626`, Currency Amber `#f59e0b`)
 - **Architecture Pattern:** Pure Laravel MVC (Model-View-Controller)
   - **Routes (`routes/web.php`):** จัดการเส้นทาง HTTP GET/POST ชี้ตรงไปยัง Controller
-  - **Controllers (`app/Http/Controllers/`):** รวม Business Logic ทุกอย่างไว้ใน Controller ไฟล์เดียวตามแต่ละโมดูล (Fat Controller สไตล์นิสิตปี 2)
+  - **Controllers (`app/Http/Controllers/`):** จัดการ Business Logic ของระบบแยกตามโมดูลการทำงาน
   - **Models (`app/Models/`):** จัดการข้อมูลและความสัมพันธ์ Eloquent
   - **Views (`resources/views/pages/`):** Pure Blade templates ทำงานผ่าน Standard HTML Forms (`<form method="POST"> @csrf`)
 

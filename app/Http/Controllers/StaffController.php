@@ -12,12 +12,15 @@ use Illuminate\Http\Request;
 
 class StaffController extends Controller
 {
+    // แสดงหน้าจอมอนิเตอร์สถานะเครื่องคอมพิวเตอร์หน้าร้าน
     public function seatMonitor()
     {
+        // 1. ดึงข้อมูลโซนและเครื่องทั้งหมดพร้อมข้อมูลเซสชันที่กำลังเล่น
         $zones = Zone::with(['seats.zone', 'seats.seatSessions' => function ($q) {
             $q->where('status', 'active')->with(['user', 'userPackage.package']);
         }])->get();
 
+        // 2. สรุปจำนวนเครื่องตามสถานะ
         $totalSeats = Seat::count();
         $occupiedSeats = Seat::where('status', 'occupied')->count();
         $availableSeats = Seat::where('status', 'available')->count();
@@ -32,6 +35,7 @@ class StaffController extends Controller
         ));
     }
 
+    // ฟังก์ชันบังคับปิดเครื่องและคิดเงิน (โดยพนักงาน)
     public function forceEnd(Request $request, EndSeatSession $endSeatSession)
     {
         $request->validate([
@@ -49,6 +53,7 @@ class StaffController extends Controller
         return redirect()->back()->with('success', 'ปิดเครื่อง ' . ($seat ? $seat->seat_number : '') . ' เรียบร้อยแล้ว');
     }
 
+    // ฟังก์ชันสลับสถานะเครื่องระหว่าง "พร้อมใช้งาน" กับ "ซ่อมบำรุง"
     public function toggleMaintenance(Request $request)
     {
         $request->validate([
@@ -75,6 +80,7 @@ class StaffController extends Controller
         return redirect()->back()->with('error', 'ไม่สามารถปรับสถานะเครื่องที่กำลังใช้งานอยู่ได้');
     }
 
+    // แสดงหน้าคิวอาหารในห้องครัว (Kitchen Queue)
     public function kitchenQueue(Request $request)
     {
         $filterStatus = $request->input('status', 'active');
@@ -102,6 +108,7 @@ class StaffController extends Controller
         ));
     }
 
+    // ฟังก์ชันอัปเดตสถานะอาหารในครัว
     public function updateOrderStatus(Request $request)
     {
         $request->validate([
@@ -117,6 +124,7 @@ class StaffController extends Controller
             return redirect()->back()->with('error', 'ไม่พบข้อมูลออเดอร์');
         }
 
+        // ตรวจสอบ: หากยังไม่ได้รับการชำระเงิน ไม่อนุญาตให้เริ่มทำอาหารหรือเสิร์ฟอาหาร
         if (in_array($status, ['preparing', 'served']) && $order->payment_status !== 'paid') {
             $msg = $order->payment_method === 'cash'
                 ? 'ยังไม่ได้ยืนยันรับเงินสดสำหรับออเดอร์ #' . $order->id
@@ -124,6 +132,7 @@ class StaffController extends Controller
             return redirect()->back()->with('error', $msg);
         }
 
+        // ถ้ากดยกเลิกออเดอร์ ให้คืนสต็อกสินค้า
         if ($status == 'cancelled' && $order->order_status != 'cancelled') {
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
@@ -140,6 +149,7 @@ class StaffController extends Controller
         return redirect()->back()->with('success', 'อัปเดตสถานะออเดอร์ #' . $order->id . ' เรียบร้อยแล้ว');
     }
 
+    // ฟังก์ชันยืนยันการรับเงินสด
     public function confirmCashPayment(Request $request)
     {
         $request->validate([
